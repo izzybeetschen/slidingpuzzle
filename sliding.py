@@ -43,6 +43,18 @@ class Solver:
         self.goal_pos_x = int(goal_components[2])
         self.goal_pos_y = int(goal_components[3])
 
-    def check_solved(self, board, goal):
-        # check if block matches the size of goal
-        pass
+    def check_solved(self, board, goal_size_x, goal_size_y, goal_pos_x, goal_pos_y):
+        if board[goal_pos_x][goal_pos_y] != 0:
+            pass
+        else:
+            return False
+
+    def check_impossible(self, board, goal_size_x, goal_size_y, goal_pos_x, goal_pos_y):
+        count = 0
+        for row in self.board:
+            count += row.count(0)  # Count the occurrences of 0 in each row
+        goal_area = goal_size_x * goal_size_y
+        if count < goal_area:
+            return True
+        else:
+            return False
