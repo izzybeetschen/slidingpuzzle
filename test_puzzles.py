@@ -24,6 +24,27 @@ class TestSolver(unittest.TestCase):
         self.assertEqual(1, solver.goal_size_x)
         self.assertEqual(1, solver.goal_size_y)
 
+    def test_solve_check_solved_true_easy1(self):
+        board = Board(2, 2)
+        board.append_matrix(0, 0, 1, 1, 1)
+        goal = '1 1 0 0'
+        solver = Solver(board, goal)
+        self.assertEqual(True, solver.check_solved())
+
+    def test_solve_check_solved_true_easy2(self):
+        board = Board(2, 2)
+        board.append_matrix(0, 0, 2, 2, 1)
+        goal = '2 2 0 0'
+        solver = Solver(board, goal)
+        self.assertEqual(True, solver.check_solved())
+
+    def test_solve_check_solved_false_easy2(self):
+        board = Board(4, 4)
+        board.append_matrix(0, 0, 2, 1, 1)
+        goal = '2 2 0 0'
+        solver = Solver(board, goal)
+        self.assertEqual(False, solver.check_solved())
+
 
 if __name__ == '__main__':
     unittest.main()

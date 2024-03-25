@@ -43,11 +43,19 @@ class Solver:
         self.goal_pos_x = int(goal_components[2])
         self.goal_pos_y = int(goal_components[3])
 
-    def check_solved(self, board, goal_size_x, goal_size_y, goal_pos_x, goal_pos_y):
-        if board[goal_pos_x][goal_pos_y] != 0:
-            pass
-        else:
-            return False
+    def check_solved(self):
+        val = self.board.board[self.goal_pos_x][self.goal_pos_y]
+        for i in range(self.goal_size_x):
+            for j in range(self.goal_size_y):
+                if self.is_valid_index(self.goal_pos_x + i, self.goal_pos_y + j):
+                    if self.board.board[self.goal_pos_x + i][self.goal_pos_y + j] != val:
+                        return False
+        if self.is_valid_index(self.goal_pos_x + self.goal_size_x, self.goal_pos_y + self.goal_size_y) and \
+                self.is_valid_index(self.goal_pos_x + self.goal_size_y, self.goal_pos_y + self.goal_size_x):
+            if self.board.board[self.goal_pos_x + self.goal_size_x][self.goal_pos_y + self.goal_size_y] == val or \
+                    self.board.board[self.goal_pos_x + self.goal_size_y][self.goal_pos_y + self.goal_size_x] == val:
+                return False
+        return True
 
     def check_impossible(self, board, goal_size_x, goal_size_y, goal_pos_x, goal_pos_y):
         count = 0
@@ -58,3 +66,6 @@ class Solver:
             return True
         else:
             return False
+
+    def is_valid_index(self, x, y):
+        return 0 <= x < len(self.board.board) and 0 <= y < len(self.board.board[0])
