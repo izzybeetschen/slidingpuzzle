@@ -47,6 +47,7 @@ class TestSolver(unittest.TestCase):
 
     def test_already_solved(self):
         board = Board(4, 4)
+        board.append_matrix(0, 0, 2, 2, 1)
         goal = '2 2 0 0'
         solver = Solver(board, goal)
         self.assertEqual('0 0 0 0', solver.already_solved())
@@ -67,6 +68,11 @@ class EasyTests(unittest.TestCase):
         question = '1 2 \n1 1 0 0\n 1 1 0 1 '
         goal = '1 1 0 1\n 1 1 0 0'
         self.assertEqual('0 1 0 1\n0 0 0 0', sliding.main(question, goal))
+
+    def test_140x140(self):
+        question = '\n'.join(['140 140'] + [f'1 140 {i} 0' for i in range(140)])
+        goal = '1 1 139 139'
+        self.assertEqual('139 0 139 139', sliding.main(question, goal))
 
 
 if __name__ == '__main__':

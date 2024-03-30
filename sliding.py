@@ -28,7 +28,8 @@ class Solver:
         self.goal = goal
         self.goal_positions = self.parse_goal(goal)
 
-    def parse_goal(self, goal):
+    @staticmethod
+    def parse_goal(goal):
         goals = goal.strip().split('\n')
         goal_positions = []
         for goal_str in goals:
@@ -53,8 +54,13 @@ class Solver:
                         if self.board.board[goal_pos_x + i][goal_pos_y + j] != val:
                             goal_met = False
                             break
-                if not goal_met:
-                    break
+
+            if self.is_valid_index(goal_pos_x + goal_size_x + 1, goal_pos_y + goal_size_y + 1):
+                if self.board.board[goal_pos_x + goal_size_x + 1][goal_pos_y] == val or self.board.board[goal_pos_x][goal_pos_y + goal_size_y + 1] == val:
+                    goal_met = False
+            elif self.is_valid_index(goal_pos_x - 1, goal_pos_y - 1):
+                if self.board.board[goal_pos_x - 1][goal_pos_y] == val or self.board.board[goal_pos_x][goal_pos_y - 1] == val:
+                    goal_met = False
 
             results.append({
                 'goal_index': idx,
@@ -102,6 +108,7 @@ def main(question, goal):
             block_value += 1
 
     solver = Solver(board, goal)
+    print(solver.check_solved())
     if solver.check_solved():
         return solver.already_solved()
     elif solver.check_impossible():
