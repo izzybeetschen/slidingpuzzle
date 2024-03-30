@@ -1,16 +1,5 @@
 import sys
 
-"""Collects data on th question and goal to be used in the code"""
-def get_data():
-    question = sys.argv[1]
-    goal = sys.argv[2]
-    goal = open(goal)
-    question = open(question)
-    question = question.read()
-    goal = goal.read()
-    print(question)  # Remove this
-    print(goal)  # Remove this
-
 
 class Board:
     def __init__(self, x, y):
@@ -37,31 +26,49 @@ class Solver:
     def __init__(self, board, goal):
         self.board = board
         self.goal = goal
-        goal_components = goal.split()
-        self.goal_size_x = int(goal_components[0])
-        self.goal_size_y = int(goal_components[1])
-        self.goal_pos_x = int(goal_components[2])
-        self.goal_pos_y = int(goal_components[3])
+        self.goal_positions = self.parse_goal(goal)
+
+    def parse_goal(self, goal):
+        goals = goal.strip().split('\n')
+        goal_positions = []
+        for goal_str in goals:
+            goal_components = goal_str.split()
+            goal_size_x = int(goal_components[0])
+            goal_size_y = int(goal_components[1])
+            goal_pos_x = int(goal_components[2])
+            goal_pos_y = int(goal_components[3])
+            goal_positions.append((goal_size_x, goal_size_y, goal_pos_x, goal_pos_y))
+        return goal_positions
 
     def check_solved(self):
-        val = self.board.board[self.goal_pos_x][self.goal_pos_y]
-        for i in range(self.goal_size_x):
-            for j in range(self.goal_size_y):
-                if self.is_valid_index(self.goal_pos_x + i, self.goal_pos_y + j):
-                    if self.board.board[self.goal_pos_x + i][self.goal_pos_y + j] != val:
-                        return False
-        if self.is_valid_index(self.goal_pos_x + self.goal_size_x, self.goal_pos_y + self.goal_size_y) and \
-                self.is_valid_index(self.goal_pos_x + self.goal_size_y, self.goal_pos_y + self.goal_size_x):
-            if self.board.board[self.goal_pos_x + self.goal_size_x][self.goal_pos_y + self.goal_size_y] == val or \
-                    self.board.board[self.goal_pos_x + self.goal_size_y][self.goal_pos_y + self.goal_size_x] == val:
-                return False
-        return True
+        results = []
+        for idx, goal_pos in enumerate(self.goal_positions):
+            goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos
+            val = self.board.board[goal_pos_x][goal_pos_y]
+            goal_met = True
 
-    def check_impossible(self, board, goal_size_x, goal_size_y, goal_pos_x, goal_pos_y):
+            for i in range(goal_size_x):
+                for j in range(goal_size_y):
+                    if self.is_valid_index(goal_pos_x + i, goal_pos_y + j):
+                        if self.board.board[goal_pos_x + i][goal_pos_y + j] != val:
+                            goal_met = False
+                            break
+                if not goal_met:
+                    break
+
+            results.append({
+                'goal_index': idx,
+                'goal_position': (goal_pos_x, goal_pos_y),
+                'goal_met': goal_met
+            })
+
+        return results
+
+    def check_impossible(self):
         count = 0
-        for row in self.board:
+        for row in self.board.board:
             count += row.count(0)  # Count the occurrences of 0 in each row
-        goal_area = goal_size_x * goal_size_y
+        goal_area = sum(goal[0] * goal[1] for goal in self.goal_positions)
         if count < goal_area:
             return True
         else:
@@ -69,3 +76,45 @@ class Solver:
 
     def is_valid_index(self, x, y):
         return 0 <= x < len(self.board.board) and 0 <= y < len(self.board.board[0])
+
+    def already_solved(self):
+        solved_goals = []
+        for goal in self.check_solved():
+            if goal['goal_met']:
+                x, y = goal['goal_position']
+                solved_goals.append(f"{x} {y} {x} {y}")
+        return '\n'.join(solved_goals)
+
+    def append_output(self):
+        pass
+
+
+def main(question, goal):
+    question_components = question.strip().split('\n')
+    x, y = map(int, question_components[0].split())  # Extracting x and y coordinates
+    board = Board(x, y)  # Creating the board object
+
+    block_value = 1
+    for line in question_components[1:]:
+        if line != '':
+            row_no, col_no, block_x, block_y = map(int, line.split())
+            board.append_matrix(block_x, block_y, row_no, col_no, block_value)
+            block_value += 1
+
+    solver = Solver(board, goal)
+    if solver.check_solved():
+        return solver.already_solved()
+    elif solver.check_impossible():
+        return -1
+
+
+if __name__ == '__main__':
+    q = sys.argv[1]
+    g = sys.argv[2]
+    g = open(g)
+    q = open(q)
+    q = q.read()
+    g = g.read()
+    print(g)
+    print(q)
+    print(main(q, g))
