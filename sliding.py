@@ -22,7 +22,7 @@ class Board:
                 self.board[block_x + i][block_y + j] = block_value
 
 
-class Solver:
+class Checker:
     def __init__(self, board, goal):
         self.board = board
         self.goal = goal
@@ -56,10 +56,12 @@ class Solver:
                             break
 
             if self.is_valid_index(goal_pos_x + goal_size_x + 1, goal_pos_y + goal_size_y + 1):
-                if self.board.board[goal_pos_x + goal_size_x + 1][goal_pos_y] == val or self.board.board[goal_pos_x][goal_pos_y + goal_size_y + 1] == val:
+                if (self.board.board[goal_pos_x + goal_size_x + 1][goal_pos_y] == val or
+                        self.board.board[goal_pos_x][goal_pos_y + goal_size_y + 1] == val):
                     goal_met = False
             elif self.is_valid_index(goal_pos_x - 1, goal_pos_y - 1):
-                if self.board.board[goal_pos_x - 1][goal_pos_y] == val or self.board.board[goal_pos_x][goal_pos_y - 1] == val:
+                if (self.board.board[goal_pos_x - 1][goal_pos_y] == val or self.board.board[goal_pos_x][goal_pos_y - 1]
+                        == val):
                     goal_met = False
 
             results.append({
@@ -83,6 +85,14 @@ class Solver:
     def is_valid_index(self, x, y):
         return 0 <= x < len(self.board.board) and 0 <= y < len(self.board.board[0])
 
+    def find_empty_tile(self):
+        empty_tile = set()
+        for i in range(len(self.board.board)):
+            for j in range(len(self.board.board[i])):
+                if self.board.board[i][j] == 0:
+                    empty_tile.add((i, j))
+        return empty_tile
+
     def already_solved(self):
         solved_goals = []
         for goal in self.check_solved():
@@ -92,6 +102,50 @@ class Solver:
         return '\n'.join(solved_goals)
 
     def append_output(self):
+        pass
+
+
+class Algorithm:
+    def __init__(self, board, checker, question_components):
+        self.queue = []
+        self.visited = []
+        self.can_move = []
+        self.board = board
+        self.checker = checker
+        self.index = []
+        self.question_components = question_components
+
+    def find_block_to_move(self):
+        for i in range(len(self.board.board)):
+            for j in range(len(self.board.board[i])):
+                if self.board.board[i][j] != 0:
+                    if not self.find_goal_blocks(i, j):
+                        z = self.board.board[i][j]
+                        if z not in self.index:
+                            self.index.append(z)
+                            row_no, col_no, block_x, block_y = map(int, self.question_components[z].split())
+                            self.can_move.append([i, j, row_no, col_no])
+
+    def find_goal_blocks(self, x, y):
+        for goal_pos in self.checker.goal_positions:
+            goal_x, goal_y, goal_pos_x, goal_pos_y = goal_pos
+            if goal_pos_x <= x < goal_pos_x + goal_x and goal_pos_y <= y < goal_pos_y + goal_y:
+                return True
+        return False
+
+    def move_block(self, block_pos, direction):
+        pass
+
+    def move_up(self):
+        pass
+
+    def move_down(self):
+        pass
+
+    def move_left(self):
+        pass
+
+    def move_right(self):
         pass
 
 
@@ -107,12 +161,16 @@ def main(question, goal):
             board.append_matrix(block_x, block_y, row_no, col_no, block_value)
             block_value += 1
 
-    solver = Solver(board, goal)
-    print(solver.check_solved())
-    if solver.check_solved():
-        return solver.already_solved()
-    elif solver.check_impossible():
+    checker = Checker(board, goal)
+    for goal_result in checker.check_solved():
+        if goal_result['goal_met']:
+            return checker.already_solved()
+    if checker.check_impossible():
         return -1
+    algo = Algorithm(board, checker, question_components)
+    algo.find_block_to_move()
+    print(algo.can_move)
+    print(algo.index)
 
 
 if __name__ == '__main__':
