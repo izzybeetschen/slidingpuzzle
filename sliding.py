@@ -114,17 +114,22 @@ class Algorithm:
         self.checker = checker
         self.index = []
         self.question_components = question_components
+        self.solution = ""
 
     def find_block_to_move(self):
-        for i in range(len(self.board.board)):
-            for j in range(len(self.board.board[i])):
-                if self.board.board[i][j] != 0:
-                    if not self.find_goal_blocks(i, j):
-                        z = self.board.board[i][j]
-                        if z not in self.index:
-                            self.index.append(z)
+        for goal_pos_tuple in self.checker.goal_positions:
+            goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos_tuple
+            for i in range(len(self.board.board)):
+                for j in range(len(self.board.board[i])):
+                    if self.board.board[i][j] != 0:
+                        if not self.find_goal_blocks(i, j):
+                            z = self.board.board[i][j]
                             row_no, col_no, block_x, block_y = map(int, self.question_components[z].split())
-                            self.can_move.append([i, j, row_no, col_no])
+                            if row_no == goal_size_x and col_no == goal_size_y:
+                                if z not in self.index:
+                                    self.index.append(z)
+                                    row_no, col_no, block_x, block_y = map(int, self.question_components[z].split())
+                                    self.can_move.append([j, i, row_no, col_no, z])
 
     def find_goal_blocks(self, x, y):
         for goal_pos in self.checker.goal_positions:
@@ -133,8 +138,16 @@ class Algorithm:
                 return True
         return False
 
-    def move_block(self, block_pos, direction):
-        pass
+    def move_block(self):
+        for block in self.can_move:
+            x, y, row_no, col_no, a = block
+            for goal_pos_tuple in self.checker.goal_positions:
+                goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos_tuple
+                print(x)
+                print(goal_pos_x)
+                if goal_pos_x > x:
+                    new_x, new_y = self.move_right(x, y, row_no, a)
+                    self.append_answer(x, y, new_x, new_y)
 
     def move_up(self):
         pass
@@ -145,8 +158,17 @@ class Algorithm:
     def move_left(self):
         pass
 
-    def move_right(self):
-        pass
+    def move_right(self, x, y, row_no, a):
+        z = x + 1
+        while self.board.board[z + row_no][y] != 0:
+            self.board.board[z - 1][y] = 0
+            self.board.board[z + row_no][y] = a
+            z += 1
+        new_x, new_y = z - 1, y
+        return new_x, new_y
+
+    def append_answer(self, x, y, new_x, new_y):
+        self.solution = (self.solution + str(x) + " " + str(y) + " " + str(new_x) + " " + str(new_y) + "\n")
 
 
 def main(question, goal):
@@ -169,8 +191,9 @@ def main(question, goal):
         return -1
     algo = Algorithm(board, checker, question_components)
     algo.find_block_to_move()
+    algo.move_block()
     print(algo.can_move)
-    print(algo.index)
+    print(algo.solution)
 
 
 if __name__ == '__main__':
