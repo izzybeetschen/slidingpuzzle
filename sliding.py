@@ -34,54 +34,58 @@ class Checker:
         goal_positions = []
         for goal_str in goals:
             goal_components = goal_str.split()
-            goal_size_x = int(goal_components[0])
-            goal_size_y = int(goal_components[1])
-            goal_pos_x = int(goal_components[2])
-            goal_pos_y = int(goal_components[3])
+            goal_size_y = int(goal_components[0])
+            goal_size_x = int(goal_components[1])
+            goal_pos_y = int(goal_components[2])
+            goal_pos_x = int(goal_components[3])
             goal_positions.append((goal_size_x, goal_size_y, goal_pos_x, goal_pos_y))
         return goal_positions
 
     def check_solved(self):
         results = []
-        for idx, goal_pos in enumerate(self.goal_positions):
+        for goal_index, goal_pos in enumerate(self.goal_positions):
             goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos
-            # print(f"Checking goal position: {goal_pos_x}, {goal_pos_y}")
-            val = self.board.board[goal_pos_x][goal_pos_y]
             goal_met = True
+            a = self.board.board[goal_pos_x][goal_pos_y]
 
+            if a == 0:
+                goal_met = False
+
+            # Check each cell within the goal area
             for i in range(goal_size_x):
                 for j in range(goal_size_y):
-                    if self.is_valid_index(goal_pos_x + i, goal_pos_y + j):
-                        if self.board.board[goal_pos_x + i][goal_pos_y + j] != val:
-                            goal_met = False
-                            break
+                    if not self.is_valid_index(goal_pos_x + i, goal_pos_y + j):
+                        goal_met = False
+                        break
+                    if self.board.board[goal_pos_x + i][goal_pos_y + j] != a:
+                        goal_met = False
+                        break
 
-            if self.is_valid_index(goal_pos_x + goal_size_x + 1, goal_pos_y + goal_size_y + 1):
-                if (self.board.board[goal_pos_x + goal_size_x + 1][goal_pos_y] == val or
-                        self.board.board[goal_pos_x][goal_pos_y + goal_size_y + 1] == val):
-                    goal_met = False
-            elif self.is_valid_index(goal_pos_x - 1, goal_pos_y - 1):
-                if (self.board.board[goal_pos_x - 1][goal_pos_y] == val or self.board.board[goal_pos_x][goal_pos_y - 1]
-                        == val):
-                    goal_met = False
+            # Check if there are any extra blocks beyond the specified goal area
+            if (self.is_valid_index(goal_pos_x + goal_size_x, goal_pos_y) and
+                    self.board.board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
+                goal_met = False
+
+            if (self.is_valid_index(goal_pos_x, goal_pos_y + goal_size_y) and
+                    self.board.board[goal_pos_x][goal_pos_y + goal_size_y] == a):
+                goal_met = False
 
             results.append({
-                'goal_index': idx,
+                'goal_index': goal_index,
                 'goal_position': (goal_pos_x, goal_pos_y),
                 'goal_met': goal_met
             })
-
         return results
 
     def check_impossible(self):
         count = 0
         for row in self.board.board:
             count += row.count(0)  # Count the occurrences of 0 in each row
-        goal_area = sum(goal[0] * goal[1] for goal in self.goal_positions)
-        if count < goal_area:
-            return True
-        else:
-            return False
+        for goal in self.goal_positions:
+            goal_area = goal[0] * goal[1]  # Calculate the goal area directly
+            if count < goal_area:
+                return True
+        return False
 
     def is_valid_index(self, x, y):
         return 0 <= x < len(self.board.board) and 0 <= y < len(self.board.board[0])
@@ -101,9 +105,6 @@ class Checker:
                 x, y = goal['goal_position']
                 solved_goals.append(f"{y} {x} {y} {x}")
         return '\n'.join(solved_goals)
-
-    def append_output(self):
-        pass
 
 
 class Algorithm:
@@ -187,14 +188,34 @@ def main(question, goal):
             block_value += 1
 
     checker = Checker(board, goal)
-    for goal_result in checker.check_solved():
-        if goal_result['goal_met']:
-            return checker.already_solved()
-    if checker.check_impossible():
-        return -1
     algo = Algorithm(board, checker, question_components)
-    algo.find_block_to_move()
-    algo.move_block()
+
+    # Get the list of all goals and their statuses
+    goal_results = checker.check_solved()
+
+    # Separate goals into solved and unsolved categories
+    solved_goals = [goal for goal in goal_results if goal['goal_met']]
+    unsolved_goals = [goal for goal in goal_results if not goal['goal_met']]
+
+    # Process already solved goals
+    if solved_goals:
+        already_solved_output = checker.already_solved()
+        if algo.solution != "":
+            algo.solution = "\n" + algo.solution + str(already_solved_output)
+        else:
+            algo.solution = algo.solution + str(already_solved_output)
+
+    for goal in goal_results:
+        if not goal['goal_met']:
+            if checker.check_impossible():
+                return '-1'
+
+    # Process unsolved goals
+    if unsolved_goals:
+        for x in range(len(unsolved_goals)):
+            algo.find_block_to_move()
+            algo.move_block()
+
     return algo.solution
 
 

@@ -82,7 +82,14 @@ class EasyTests(unittest.TestCase):
         output = subprocess.check_output(command, shell=True)
         output_str = output.decode("utf-8")
         output_str = output_str.strip()
-        self.assertEqual(-1, int(output_str))
+        self.assertEqual('-1', output_str)
+
+    def test_140x140_goal2(self):
+        command = 'python3 sliding.py puzzles/easy/140x140 puzzles/easy/140x140.goal.2'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('\n'.join([f'{i} 0 {i} 0' for i in range(140)]), output_str)
 
 
 if __name__ == '__main__':
