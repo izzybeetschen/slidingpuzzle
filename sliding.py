@@ -45,6 +45,7 @@ class Checker:
         results = []
         for idx, goal_pos in enumerate(self.goal_positions):
             goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos
+            # print(f"Checking goal position: {goal_pos_x}, {goal_pos_y}")
             val = self.board.board[goal_pos_x][goal_pos_y]
             goal_met = True
 
@@ -98,7 +99,7 @@ class Checker:
         for goal in self.check_solved():
             if goal['goal_met']:
                 x, y = goal['goal_position']
-                solved_goals.append(f"{x} {y} {x} {y}")
+                solved_goals.append(f"{y} {x} {y} {x}")
         return '\n'.join(solved_goals)
 
     def append_output(self):
@@ -129,7 +130,7 @@ class Algorithm:
                                 if z not in self.index:
                                     self.index.append(z)
                                     row_no, col_no, block_x, block_y = map(int, self.question_components[z].split())
-                                    self.can_move.append([j, i, row_no, col_no, z])
+                                    self.can_move.append([i, j, row_no, col_no, z])
 
     def find_goal_blocks(self, x, y):
         for goal_pos in self.checker.goal_positions:
@@ -143,10 +144,8 @@ class Algorithm:
             x, y, row_no, col_no, a = block
             for goal_pos_tuple in self.checker.goal_positions:
                 goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos_tuple
-                print(x)
-                print(goal_pos_x)
                 if goal_pos_x > x:
-                    new_x, new_y = self.move_right(x, y, row_no, a)
+                    new_x, new_y = self.move_right(x, y, col_no, a)
                     self.append_answer(x, y, new_x, new_y)
 
     def move_up(self):
@@ -160,26 +159,30 @@ class Algorithm:
 
     def move_right(self, x, y, row_no, a):
         z = x + 1
-        while self.board.board[z + row_no][y] != 0:
-            self.board.board[z - 1][y] = 0
-            self.board.board[z + row_no][y] = a
-            z += 1
-        new_x, new_y = z - 1, y
+        new_x, new_y = x, y
+        while self.checker.is_valid_index(z + row_no, y):
+            if self.board.board[z + row_no][y] == 0:
+                self.board.board[z - 1][y] = 0
+                self.board.board[z + row_no][y] = a
+                z += 1
+                new_x, new_y = z, y
+            else:
+                return new_x, new_y
         return new_x, new_y
 
     def append_answer(self, x, y, new_x, new_y):
-        self.solution = (self.solution + str(x) + " " + str(y) + " " + str(new_x) + " " + str(new_y) + "\n")
+        self.solution = (self.solution + str(y) + " " + str(x) + " " + str(new_y) + " " + str(new_x) + "\n")
 
 
 def main(question, goal):
     question_components = question.strip().split('\n')
-    x, y = map(int, question_components[0].split())  # Extracting x and y coordinates
+    y, x = map(int, question_components[0].split())  # Extracting x and y coordinates
     board = Board(x, y)  # Creating the board object
 
     block_value = 1
     for line in question_components[1:]:
         if line != '':
-            row_no, col_no, block_x, block_y = map(int, line.split())
+            col_no, row_no, block_y, block_x = map(int, line.split())
             board.append_matrix(block_x, block_y, row_no, col_no, block_value)
             block_value += 1
 
@@ -192,8 +195,7 @@ def main(question, goal):
     algo = Algorithm(board, checker, question_components)
     algo.find_block_to_move()
     algo.move_block()
-    print(algo.can_move)
-    print(algo.solution)
+    return algo.solution
 
 
 if __name__ == '__main__':
@@ -203,6 +205,4 @@ if __name__ == '__main__':
     q = open(q)
     q = q.read()
     g = g.read()
-    print(g)
-    print(q)
     print(main(q, g))

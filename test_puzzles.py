@@ -18,7 +18,7 @@ class TestBoard(unittest.TestCase):
         self.assertEqual(board.board, [[1, 1, 0], [1, 1, 0], [0, 0, 0]])
 
 
-class TestSolver(unittest.TestCase):
+class TestChecker(unittest.TestCase):
     def test_solve_init(self):
         board = Board(2, 2)
         goal = '1 1 0 0'
@@ -66,8 +66,8 @@ class EasyTests(unittest.TestCase):
         self.assertEqual('0 0 0 0', sliding.main(question, goal))
 
     def test_one_by_two_two_blocks(self):
-        question = '1 2 \n1 1 0 0\n 1 1 0 1 '
-        goal = '1 1 0 1\n 1 1 0 0'
+        question = '1 2\n1 1 0 0\n 1 1 0 1 '
+        goal = '1 1 0 1\n1 1 0 0'
         self.assertEqual('0 1 0 1\n0 0 0 0', sliding.main(question, goal))
 
     def test_140x140(self):
@@ -75,7 +75,7 @@ class EasyTests(unittest.TestCase):
         output = subprocess.check_output(command, shell=True)
         output_str = output.decode("utf-8")
         output_str = output_str.strip()
-        self.assertEqual('139 0 139 139', int(output_str))
+        self.assertEqual('139 0 139 139', output_str)
 
     def test_140x140_impossible(self):
         command = 'python3 sliding.py puzzles/easy/140x140 puzzles/easy/140x140.impossible.goal'
