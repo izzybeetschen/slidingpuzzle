@@ -63,7 +63,7 @@ class Checker:
 
             # Check if there are any extra blocks beyond the specified goal area
             if (self.is_valid_index(goal_pos_x + goal_size_x, goal_pos_y) and
-                    self.board.board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
+                self.board.board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
                 goal_met = False
 
             if (self.is_valid_index(goal_pos_x, goal_pos_y + goal_size_y) and
@@ -125,6 +125,7 @@ class Algorithm:
                 for j in range(len(self.board.board[i])):
                     if self.board.board[i][j] != 0:
                         if not self.find_goal_blocks(i, j):
+                            print(i, j)
                             z = self.board.board[i][j]
                             row_no, col_no, block_x, block_y = map(int, self.question_components[z].split())
                             if row_no == goal_size_x and col_no == goal_size_y:
@@ -142,34 +143,93 @@ class Algorithm:
 
     def move_block(self):
         for block in self.can_move:
+            print(1)
             x, y, row_no, col_no, a = block
             for goal_pos_tuple in self.checker.goal_positions:
                 goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos_tuple
-                if goal_pos_x > x:
-                    new_x, new_y = self.move_right(x, y, col_no, a)
-                    self.append_answer(x, y, new_x, new_y)
+                while x != goal_pos_x or y != goal_pos_y:
+                    if goal_pos_x > x:
+                        new_x, new_y = self.move_right(x, y, row_no, a, goal_pos_x, goal_pos_y)
+                        self.append_answer(x, y, new_x, new_y)
+                        x = new_x
+                        y = new_y
+                    elif goal_pos_x < x:
+                        new_x, new_y = self.move_left(x, y, row_no, a, goal_pos_x, goal_pos_y)
+                        self.append_answer(x, y, new_x, new_y)
+                        x = new_x
+                        y = new_y
+                    elif goal_pos_y > y:
+                        new_x, new_y = self.move_down(x, y, col_no, a, goal_pos_x, goal_pos_y)
+                        self.append_answer(x, y, new_x, new_y)
+                        x = new_x
+                        y = new_y
 
     def move_up(self):
         pass
 
-    def move_down(self):
-        pass
-
-    def move_left(self):
-        pass
-
-    def move_right(self, x, y, row_no, a):
-        z = x + 1
+    def move_down(self, x, y, col_no, a, goal_x, goal_y):
+        z = y + 1
         new_x, new_y = x, y
-        while self.checker.is_valid_index(z + row_no, y):
-            if self.board.board[z + row_no][y] == 0:
-                self.board.board[z - 1][y] = 0
-                self.board.board[z + row_no][y] = a
-                z += 1
-                new_x, new_y = z, y
+
+        last_dist = 1000
+        while self.checker.is_valid_index(x, z + col_no):
+            current_dist = self.manhatten_distance(goal_x, goal_y, x, y)
+            if current_dist < last_dist:
+                if self.board.board[x][z + col_no] == 0:
+                    self.board.board[x][z-1] = 0
+                    self.board.board[x][z] = a
+                    z += 1
+                    new_x, new_y = z, y
+                    last_dist = current_dist
+                else:
+                    return new_x, new_y
+            else:
+                return new_x, new_y
+            return new_x, new_y
+
+    def move_left(self, x, y, row_no, a, goal_x, goal_y):
+        z = x - 1
+        new_x, new_y = x, y
+
+        last_dist = 1000
+        while self.checker.is_valid_index(z, y):
+            current_dist = self.manhatten_distance(goal_x, goal_y, z + 1, y)
+            if current_dist < last_dist:
+                if self.board.board[z][y] == 0:
+                    self.board.board[z + row_no][y] = 0
+                    self.board.board[z][y] = a
+                    z -= 1
+                    new_x, new_y = z, y
+                    last_dist = current_dist
+                else:
+                    return new_x, new_y
             else:
                 return new_x, new_y
         return new_x, new_y
+
+    def move_right(self, x, y, row_no, a, goal_x, goal_y):
+        z = x + 1
+        new_x, new_y = x, y
+
+        last_dist = 10000
+        while self.checker.is_valid_index(z + row_no, y):
+            current_dist = self.manhatten_distance(goal_x, goal_y, z - 1, y)
+            if current_dist < last_dist:
+                if self.board.board[z + row_no][y] == 0:
+                    self.board.board[z - 1][y] = 0
+                    self.board.board[z + row_no][y] = a
+                    z += 1
+                    new_x, new_y = z, y
+                    last_dist = current_dist
+                else:
+                    return new_x, new_y
+            else:
+                return new_x, new_y
+        return new_x, new_y
+
+    @staticmethod
+    def manhatten_distance(goal_x, goal_y, current_x, current_y):
+        return abs(goal_x - current_x) + abs(goal_y - current_y)
 
     def append_answer(self, x, y, new_x, new_y):
         self.solution = (self.solution + str(y) + " " + str(x) + " " + str(new_y) + " " + str(new_x) + "\n")
@@ -192,6 +252,7 @@ def main(question, goal):
 
     # Get the list of all goals and their statuses
     goal_results = checker.check_solved()
+    print(goal_results)
 
     # Separate goals into solved and unsolved categories
     solved_goals = [goal for goal in goal_results if goal['goal_met']]
