@@ -148,7 +148,6 @@ class Algorithm:
             for goal in unsolved_goals:
                 goal_pos_x, goal_pos_y = goal['goal_position']
 
-                # Check if the current block is associated with this goal position
                 if goal_pos_x == x and goal_pos_y == y:
                     goal_met = True
                     break  # No need to move this block, it's already at its goal position
@@ -238,6 +237,7 @@ class Algorithm:
         new_x, new_y = x, y
 
         last_dist = 1000
+
         while self.checker.is_valid_index(z, y):
             current_dist = self.manhatten_distance(goal_x, goal_y, z, y)
             if current_dist < last_dist:
