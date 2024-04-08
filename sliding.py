@@ -145,50 +145,53 @@ class Algorithm:
             x, y, row_no, col_no, a = block
 
             goal_met = False  # Initialize goal_met flag
-            for goal in unsolved_goals:
-                goal_pos_x, goal_pos_y = goal['goal_position']
+            while unsolved_goals:
+                for goal in unsolved_goals:
+                    goal_pos_x, goal_pos_y = goal['goal_position']
 
-                if goal_pos_x == x and goal_pos_y == y:
-                    goal_met = True
-                    break  # No need to move this block, it's already at its goal position
+                    if goal_pos_x == x and goal_pos_y == y:
+                        goal_met = True
+                        break  # No need to move this block, it's already at its goal position
 
-                # Move the block towards the goal position
-                while not goal_met:
-                    if goal_pos_x > x and self.board.board[x+col_no][y] == 0:
-                        # print("right")
-                        new_x, new_y = self.move_right(x, y, col_no, a, goal_pos_x, goal_pos_y)
-                        if (new_x, new_y) == (x, y):  # Check if no movement occurred
-                            break
-                        self.append_answer(x, y, new_x, new_y)
-                        x, y = new_x, new_y
-                    elif goal_pos_x < x and self.board.board[x-1][y] == 0:
-                        # print('left')
-                        new_x, new_y = self.move_left(x, y, row_no, a, goal_pos_x, goal_pos_y)
-                        if (new_x, new_y) == (x, y):  # Check if no movement occurred
-                            break
-                        self.append_answer(x, y, new_x, new_y)
-                        x, y = new_x, new_y
-                    elif goal_pos_y > y:
-                        # print('down')
-                        new_x, new_y = self.move_down(x, y, col_no, row_no, a, goal_pos_x, goal_pos_y)
-                        if (new_x, new_y) == (x, y):  # Check if no movement occurred
-                            break
-                        self.append_answer(x, y, new_x, new_y)
-                        x, y = new_x, new_y
-                    elif goal_pos_y < y:
-                        # print('up')
-                        new_x, new_y = self.move_up(x, y, col_no, row_no, a, goal_pos_x, goal_pos_y)
-                        if (new_x, new_y) == (x, y):  # Check if no movement occurred
-                            break
-                        self.append_answer(x, y, new_x, new_y)
-                        x, y = new_x, new_y
+                    # Move the block towards the goal position
+                    while not goal_met:
+                        if goal_pos_x > x and self.board.board[x+col_no][y] == 0:
+                            # print("right")
+                            new_x, new_y = self.move_right(x, y, col_no, a, goal_pos_x, goal_pos_y)
+                            if (new_x, new_y) == (x, y):  # Check if no movement occurred
+                                break
+                            self.append_answer(x, y, new_x, new_y)
+                            x, y = new_x, new_y
+                        elif goal_pos_x < x and self.board.board[x-1][y] == 0:
+                            # print('left')
+                            new_x, new_y = self.move_left(x, y, row_no, a, goal_pos_x, goal_pos_y)
+                            if (new_x, new_y) == (x, y):  # Check if no movement occurred
+                                break
+                            self.append_answer(x, y, new_x, new_y)
+                            x, y = new_x, new_y
+                        elif goal_pos_y > y:
+                            # print('down')
+                            new_x, new_y = self.move_down(x, y, col_no, row_no, a, goal_pos_x, goal_pos_y)
+                            if (new_x, new_y) == (x, y):  # Check if no movement occurred
+                                break
+                            self.append_answer(x, y, new_x, new_y)
+                            x, y = new_x, new_y
+                        elif goal_pos_y < y:
+                            # print('up')
+                            new_x, new_y = self.move_up(x, y, col_no, row_no, a, goal_pos_x, goal_pos_y)
+                            if (new_x, new_y) == (x, y):  # Check if no movement occurred
+                                break
+                            self.append_answer(x, y, new_x, new_y)
+                            x, y = new_x, new_y
 
-                    # Check if the block has reached the goal position
-                    if (x, y) == (goal_pos_x, goal_pos_y):
-                        goal_met = True  # Block has reached its goal position
-                        break  # Exit the while loop
+                        # Check if the block has reached the goal position
+                        if (x, y) == (goal_pos_x, goal_pos_y):
+                            goal_met = True  # Block has reached its goal position
+                            break  # Exit the while loop
+                    if goal_met is True:
+                        self.can_move.remove(block)
+                        unsolved_goals.remove(goal)
 
-                    # Append the movement to the solution
 
     def move_up(self, x, y, col_no, row_no, a, goal_x, goal_y):
         z = y - 1
@@ -320,9 +323,11 @@ def main(question, goal):
 
     # Process unsolved goals
     if unsolved_goals:
-        for x in range(len(unsolved_goals)):
+        if len(unsolved_goals) == 1:
             algo.find_block_to_move()
             algo.move_block(unsolved_goals)
+        else:
+            pass
 
     return algo.solution
 
