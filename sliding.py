@@ -154,7 +154,7 @@ class Algorithm:
 
                 # Move the block towards the goal position
                 while not goal_met:
-                    if goal_pos_x > x:
+                    if goal_pos_x > x and self.board.board[x+col_no][y] == 0:
                         # print("right")
                         new_x, new_y = self.move_right(x, y, col_no, a, goal_pos_x, goal_pos_y)
                         if (new_x, new_y) == (x, y):  # Check if no movement occurred
@@ -254,14 +254,14 @@ class Algorithm:
         return new_x, new_y
 
     def move_right(self, x, y, row_no, a, goal_x, goal_y):
-        z = x + 1
+        z = x
         new_x, new_y = x, y
         last_dist = 10000
         while self.checker.is_valid_index(z + row_no, y):
             current_dist = self.manhatten_distance(goal_x, goal_y, z - 1, y)
             if current_dist < last_dist:
                 if self.board.board[z + row_no][y] == 0:
-                    self.board.board[z - 1][y] = 0
+                    self.board.board[z][y] = 0
                     self.board.board[z + row_no][y] = a
                     z += 1
                     new_x, new_y = z, y
