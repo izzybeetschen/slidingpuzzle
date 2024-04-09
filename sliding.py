@@ -1,4 +1,5 @@
 import sys
+import copy
 
 
 class Board:
@@ -110,7 +111,7 @@ class Checker:
 class Algorithm:
     def __init__(self, board, checker, question_components):
         self.queue = []
-        self.visited = []
+        self.visited = set()
         self.can_move = []
         self.board = board
         self.checker = checker
@@ -196,14 +197,14 @@ class Algorithm:
 
                     # Move the block towards the goal position
                     while not goal_met:
-                        if goal_pos_x > x and self.board.board[x+col_no][y] == 0:
+                        if goal_pos_x > x and self.board.board[x + col_no][y] == 0:
                             # print("right")
                             new_x, new_y = self.move_right(x, y, col_no, a, goal_pos_x, goal_pos_y)
                             if (new_x, new_y) == (x, y):  # Check if no movement occurred
                                 break
                             self.append_answer(x, y, new_x, new_y)
                             x, y = new_x, new_y
-                        elif goal_pos_x < x and self.board.board[x-1][y] == 0:
+                        elif goal_pos_x < x and self.board.board[x - 1][y] == 0:
                             # print('left')
                             new_x, new_y = self.move_left(x, y, row_no, a, goal_pos_x, goal_pos_y)
                             if (new_x, new_y) == (x, y):  # Check if no movement occurred
@@ -243,8 +244,8 @@ class Algorithm:
             if current_dist < last_dist:
                 if self.board.board[x][z] == 0:
                     for i in range(row_no):
-                        self.board.board[x+i][z + 1] = 0
-                        self.board.board[x+i][z] = a
+                        self.board.board[x + i][z + 1] = 0
+                        self.board.board[x + i][z] = a
                         new_y, new_x = z, y
                         z -= 1
                         last_dist = current_dist
@@ -259,13 +260,13 @@ class Algorithm:
         new_x, new_y = x, y
 
         last_dist = 1000
-        while self.checker.is_valid_index(x, z+row_no):
+        while self.checker.is_valid_index(x, z + row_no):
             current_dist = self.manhatten_distance(goal_x, goal_y, x, z)
             if current_dist < last_dist:
-                if self.board.board[x][z+row_no] == 0:
+                if self.board.board[x][z + row_no] == 0:
                     for i in range(row_no):
                         self.board.board[x + i][z] = 0
-                        self.board.board[x + i][z+row_no] = a
+                        self.board.board[x + i][z + row_no] = a
                         z += 1
                         new_y, new_x = z, x
                         last_dist = current_dist
@@ -325,6 +326,72 @@ class Algorithm:
         else:
             self.solution = (self.solution + "\n" + str(y) + " " + str(x) + " " + str(new_y) + " " + str(new_x))
 
+
+def __init__(self, board, checker, algo, question_components):
+    self.board = board
+    self.checker = checker
+    self.algo = algo
+    self.queue = []
+    self.visited = set()
+    self.question_components = question_components
+
+
+def BFS(self):
+    self.queue.append(self.board.board)
+    self.visited.add(self.board.board)
+    while self.queue:
+        current_state = self.queue.pop(0)
+        for block in self.question_components:
+            col_no, row_no, block_x, block_y = block
+            a = self.board.board[block_x][block_y]
+
+            new_x, new_y = block_x, block_y
+            copied_board = copy.deepcopy(current_state)
+            while copied_board[new_x + row_no][new_y] == 0:
+                new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, a, copied_board)
+            if copied_board not in self.visited:
+                self.visited.add(copied_board)
+                self.queue.append(copied_board)
+
+            copied_board = copy.deepcopy(current_state)
+            new_x, new_y = block_x, block_y
+            while copied_board[new_x][new_y] == 0:
+                new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, a, copied_board)
+            if copied_board not in self.visited:
+                self.visited.add(copied_board)
+                self.queue.append(copied_board)
+
+
+def move_right(self, x, y, row_no, a, copied_board):
+    current_x = x
+    while self.checker.is_valid_index(current_x + row_no, y):
+        if [current_x + row_no][y] == 0:
+            # Move the piece
+            copied_board[current_x][y] = 0
+            copied_board[current_x + row_no][y] = a
+            current_x += 1  # Move to the next position
+        else:
+            # Stop moving if blocked by another piece
+            break
+
+    # Return the final position after all valid moves
+    return current_x, y, copied_board
+
+
+def move_left(self, x, y, row_no, a, copied_board):
+    current_x = x
+    while self.checker.is_valid_index(current_x - 1, y):
+        if [current_x + row_no][y] == 0:
+            # Move the piece
+            copied_board[current_x][y] = 0
+            copied_board[current_x + row_no][y] = a
+            current_x += 1  # Move to the next position
+        else:
+            # Stop moving if blocked by another piece
+            break
+
+    # Return the final position after all valid moves
+    return current_x, y, copied_board
 
 
 def main(question, goal):
