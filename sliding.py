@@ -121,11 +121,14 @@ class Algorithm:
     def find_block_to_move(self):
         for goal_pos_tuple in self.checker.goal_positions:
             goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos_tuple
+            print(goal_size_x, goal_size_y, goal_pos_x, goal_pos_y)
             for i in range(len(self.board.board)):
                 for j in range(len(self.board.board[i])):
                     if self.board.board[i][j] != 0:
+                        print(self.find_goal_blocks(i, j))
                         if not self.find_goal_blocks(i, j):
                             z = self.board.board[i][j]
+                            print(z)
                             col_no, row_no, block_x, block_y = map(int, self.question_components[z].split())
                             if row_no == goal_size_x and col_no == goal_size_y:
                                 if z not in self.index:
@@ -136,8 +139,28 @@ class Algorithm:
     def find_goal_blocks(self, x, y):
         for goal_pos in self.checker.goal_positions:
             goal_x, goal_y, goal_pos_x, goal_pos_y = goal_pos
+
+            # Check if the block (x, y) is within the bounds of the goal area
             if goal_pos_x <= x < goal_pos_x + goal_x and goal_pos_y <= y < goal_pos_y + goal_y:
-                return True
+                z = self.board.board[goal_pos_x][goal_pos_y]
+
+                # Check if all cells within the goal area match the block value at the top-left corner
+                for i in range(goal_x):
+                    for j in range(goal_y):
+                        if not self.checker.is_valid_index(goal_pos_x + i, goal_pos_y + j):
+                            return False
+                        if self.board.board[goal_pos_x + i][goal_pos_y + j] != z:
+                            return False
+
+                # Check if there are no blocks outside the specified goal area adjacent to it
+                if (not self.checker.is_valid_index(goal_pos_x + goal_x, goal_pos_y) or
+                        self.board.board[goal_pos_x + goal_x][goal_pos_y] == z):
+                    return True
+
+                if (not self.checker.is_valid_index(goal_pos_x, goal_pos_y + goal_y) or
+                        self.board.board[goal_pos_x][goal_pos_y + goal_y] == z):
+                    return True
+
         return False
 
     def move_block(self, unsolved_goals):
@@ -191,7 +214,6 @@ class Algorithm:
                     if goal_met is True:
                         self.can_move.remove(block)
                         unsolved_goals.remove(goal)
-
 
     def move_up(self, x, y, col_no, row_no, a, goal_x, goal_y):
         z = y - 1
@@ -327,7 +349,8 @@ def main(question, goal):
             algo.find_block_to_move()
             algo.move_block(unsolved_goals)
         else:
-            pass
+            algo.find_block_to_move()
+            print(algo.can_move)
 
     return algo.solution
 
