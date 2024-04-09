@@ -121,14 +121,11 @@ class Algorithm:
     def find_block_to_move(self):
         for goal_pos_tuple in self.checker.goal_positions:
             goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos_tuple
-            print(goal_size_x, goal_size_y, goal_pos_x, goal_pos_y)
             for i in range(len(self.board.board)):
                 for j in range(len(self.board.board[i])):
                     if self.board.board[i][j] != 0:
-                        print(self.find_goal_blocks(i, j))
                         if not self.find_goal_blocks(i, j):
                             z = self.board.board[i][j]
-                            print(z)
                             col_no, row_no, block_x, block_y = map(int, self.question_components[z].split())
                             if row_no == goal_size_x and col_no == goal_size_y:
                                 if z not in self.index:
@@ -152,13 +149,34 @@ class Algorithm:
                         if self.board.board[goal_pos_x + i][goal_pos_y + j] != z:
                             return False
 
-                # Check if there are no blocks outside the specified goal area adjacent to it
+                # checks if block longer to right
                 if (not self.checker.is_valid_index(goal_pos_x + goal_x, goal_pos_y) or
                         self.board.board[goal_pos_x + goal_x][goal_pos_y] == z):
                     return True
 
+                # checks if block too long down
                 if (not self.checker.is_valid_index(goal_pos_x, goal_pos_y + goal_y) or
                         self.board.board[goal_pos_x][goal_pos_y + goal_y] == z):
+                    return True
+
+                # checks if block too long left
+                if (not self.checker.is_valid_index(goal_pos_x - 1, goal_pos_y) or
+                        self.board.board[goal_pos_x - 1][goal_pos_y] == z):
+                    return True
+
+                # checks if block too long up
+                if (not self.checker.is_valid_index(goal_pos_x, goal_pos_y - 1) or
+                        self.board.board[goal_pos_x][goal_pos_y - 1] == z):
+                    return True
+
+                # checks if block not long enough right
+                if (not self.checker.is_valid_index(goal_pos_x - 1 + goal_x, goal_pos_y) or
+                        self.board.board[goal_pos_x - 1 + goal_x][goal_pos_y] != z):
+                    return True
+
+                # checks if block not long enough down
+                if (not self.checker.is_valid_index(goal_pos_x, goal_pos_y - 1 + goal_y) or
+                        self.board.board[goal_pos_x][goal_pos_y - 1 + goal_y] != z):
                     return True
 
         return False
@@ -308,6 +326,7 @@ class Algorithm:
             self.solution = (self.solution + "\n" + str(y) + " " + str(x) + " " + str(new_y) + " " + str(new_x))
 
 
+
 def main(question, goal):
     question_components = question.strip().split('\n')
     y, x = map(int, question_components[0].split())  # Extracting x and y coordinates
@@ -350,7 +369,6 @@ def main(question, goal):
             algo.move_block(unsolved_goals)
         else:
             algo.find_block_to_move()
-            print(algo.can_move)
 
     return algo.solution
 
