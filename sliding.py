@@ -107,6 +107,30 @@ class Checker:
                 solved_goals.append(f"{y} {x} {y} {x}")
         return '\n'.join(solved_goals)
 
+    def is_board_solved(self, current_board):
+        # Iterate over each goal defined in the checker
+        for goal_size_x, goal_size_y, goal_pos_x, goal_pos_y in self.goal_positions:
+            # Check if the goal area is valid within the board dimensions
+            if goal_pos_x + goal_size_x > self.board.x or goal_pos_y + goal_size_y > self.board.y:
+                return False
+
+            # Get the block value in the top-left corner of the goal area
+            expected_block_value = current_board[goal_pos_y][goal_pos_x]
+
+            # Iterate over the cells within the goal area
+            for i in range(goal_size_y):
+                for j in range(goal_size_x):
+                    board_x = goal_pos_x + j
+                    board_y = goal_pos_y + i
+
+                    if self.is_valid_index(board_y, board_x):
+                    # Check if the board cell matches the expected block value
+                        if current_board[board_y][board_x] != expected_block_value:
+                            return False
+
+        # If all goal areas match their expected block values, the board is solved
+        return True
+
 
 class Algorithm:
     def __init__(self, board, checker, question_components):
@@ -342,108 +366,126 @@ class BFS:
 
         while self.queue:
             current_state = self.queue.pop(0)
-            goal_results = self.checker.check_solved()
-            unsolved_goals = [goal for goal in goal_results if not goal['goal_met']]
 
-            if not unsolved_goals:
+            if self.checker.is_board_solved(current_state):
                 return current_state
 
             for block in self.question_components[1:]:
                 print("Exploring state:", current_state)
-                print("Queue:", self.queue)
-                print("Visited:", self.visited)
-                print("Block:", block)
+                # print("block:", block)
+                # print("Queue:", self.queue)
+                # print("Visited:", self.visited)
+                # print("Block:", block)
                 col_no, row_no, block_y, block_x = map(int, block.split())
-                a = self.board.board[block_x][block_y]
+                a = current_state[block_x][block_y]
 
                 new_x, new_y = block_x, block_y
                 copied_board = copy.deepcopy(current_state)
                 if self.checker.is_valid_index(new_x + row_no, new_y):
                     while self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
-                        print("right")
-                        print(copied_board[new_x + row_no][new_y])
+                        # print("right")
+                        # print(copied_board[new_x + row_no][new_y])
                         new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
                             self.queue.append(copied_board)
-                            print("Queue:", self.queue)
-                            print("Visited:", self.visited)
+                            # print("Queue:", self.queue)
+                            # print("Visited:", self.visited)
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                if self.checker.is_valid_index(new_x - 1, new_y):
-                    while copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x-1, new_y):
-                        print("left")
+                print(new_x, new_y)
+                if self.checker.is_valid_index(new_x -1, new_y):
+                    while copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
+                        # print("left")
                         new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
                             self.queue.append(copied_board)
 
-                    copied_board = copy.deepcopy(current_state)
-                    new_x, new_y = block_x, block_y
-                    if self.checker.is_valid_index(new_x, new_y - 1):
-                        while self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
-                            print("up")
-                            new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, a, copied_board)
-                            if copied_board not in self.visited:
-                                self.visited.append(copied_board)
-                                self.queue.append(copied_board)
+                copied_board = copy.deepcopy(current_state)
+                # print(":)")
+                new_x, new_y = block_x, block_y
+                if self.checker.is_valid_index(new_x, new_y - 1):
+                    while self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
+                        # print("up")
+                        new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, a, copied_board)
+                        if copied_board not in self.visited:
+                            self.visited.append(copied_board)
+                            self.queue.append(copied_board)
 
-                    copied_board = copy.deepcopy(current_state)
-                    new_x, new_y = block_x, block_y
-                    if self.checker.is_valid_index(new_x, new_y + col_no):
-                        if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
-                            print("down")
-                            print(new_x, new_y, col_no)
-                            new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, a, copied_board)
-                            print("Copy:", copied_board)
-                            print("New:", new_x, new_y)
-                            if copied_board not in self.visited:
-                                self.visited.append(copied_board)
-                                self.queue.append(copied_board)
+                copied_board = copy.deepcopy(current_state)
+                new_x, new_y = block_x, block_y
+                if self.checker.is_valid_index(new_x, new_y + col_no):
+                    if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
+                        # print("down")
+                        # print(new_x, new_y, col_no)
+                        new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
+                        if copied_board not in self.visited:
+                            self.visited.append(copied_board)
+                            self.queue.append(copied_board)
+
         return -1
 
     def move_right(self, x, y, row_no, col_no, a, copied_board):
         current_x = x
         if self.checker.is_valid_index(current_x + row_no, y):
-            print(current_x, row_no, y)
+            for i in range(col_no):
+                if copied_board[current_x + row_no][y+i] != 0:
+                    return current_x, y, copied_board
+
             if copied_board[current_x + row_no][y] == 0:
                 for i in range(col_no):
                     copied_board[current_x][y + i] = 0
                     copied_board[current_x + row_no][y + i] = a
-                    current_x += 1  # Move to the next position
+                current_x += 1  # Move to the next position
         # Return the final position after all valid moves
         return current_x, y, copied_board
 
     def move_left(self, x, y, row_no, col_no, a, copied_board):
         current_x = x
         if self.checker.is_valid_index(current_x - 1, y):
-            print(current_x, row_no, y)
-            if copied_board[current_x - 1][y] == 0:
-                for i in range(col_no):
+            for i in range(col_no):
+                if copied_board[current_x - 1][y+i] != 0:
+                    return current_x, y, copied_board
+
+            for i in range(col_no):
+                if copied_board[current_x - 1][y] == 0:
                     copied_board[current_x][y + i] = 0
                     copied_board[current_x - 1][y + i] = a
-                    current_x -= 1  # Move to the next position
+                else:
+                    return current_x, y, copied_board
+            current_x -= 1  # Move to the next position
         # Return the final position after all valid moves
         return current_x, y, copied_board
 
     def move_up(self, x, y, row_no, a, copied_board):
         current_y = y
         if copied_board[x][current_y - 1] == 0:
+
+            """for i in range(row_no):
+                if copied_board[x + i][current_y - 1] != 0:
+                    return x, current_y, copied_board"""
+
             for i in range(row_no):
                 copied_board[x + i][current_y] = 0
                 copied_board[x + i][current_y - 1] = a
-                current_y -= 1  # Move to the next position
+            current_y -= 1  # Move to the next position
         # Return the final position after all valid moves
         return x, current_y, copied_board
 
-    def move_down(self, x, y, row_no, a, copied_board):
+    def move_down(self, x, y, row_no, col_no, a, copied_board):
         current_y = y
-        if copied_board[x][current_y + row_no] == 0:
+
+        for i in range(row_no):
+            if copied_board[x + i][current_y + col_no] != 0:
+                return x, current_y, copied_board
+
+        if copied_board[x][current_y + col_no] == 0:
             for i in range(row_no):
                 copied_board[x + i][current_y] = 0
-                copied_board[x + i][current_y + row_no] = a
-                current_y += 1  # Move to the next position
+                copied_board[x + i][current_y + col_no] = a
+            current_y += 1  # Move to the next position
 
         # Return the final position after all valid moves
         return x, current_y, copied_board
@@ -453,6 +495,7 @@ def main(question, goal):
     question_components = question.strip().split('\n')
     y, x = map(int, question_components[0].split())  # Extracting x and y coordinates
     board = Board(x, y)  # Creating the board object
+    goal_board = Board(x, y)
 
     block_value = 1
     for line in question_components[1:]:
