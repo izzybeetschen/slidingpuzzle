@@ -372,7 +372,9 @@ class BFS:
         while self.queue:
             current = self.queue.pop(0)
             current_state, block = current
+            print(len(block))
             first_block = block.pop(0)
+            print("Start:", len(block))
             current_block = first_block
             count = 1
             while count != 2:
@@ -387,12 +389,12 @@ class BFS:
                 if self.checker.is_valid_index(new_x + row_no, new_y):
                     while self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
                         print("right")
-                        # print(copied_board[new_x + row_no][new_y])
                         new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
-                        if copied_board not in self.visited:
+                        if copied_board not in self.visited and new_x != block_x:
                             self.visited.append(copied_board)
-                            add_block = block
+                            add_block = copy.deepcopy(block)
                             add_block.append([col_no, row_no, new_y, new_x])
+                            print("Right:", len(block))
                             self.queue.append([copied_board, add_block])
 
                 copied_board = copy.deepcopy(current_state)
@@ -405,8 +407,9 @@ class BFS:
                         new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
-                            add_block = block
+                            add_block = copy.deepcopy(block)
                             add_block.append([col_no, row_no, new_y, new_x])
+                            print("Left:", len(block))
                             self.queue.append([copied_board, add_block])
 
                 copied_board = copy.deepcopy(current_state)
@@ -419,25 +422,34 @@ class BFS:
                             break
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
-                            add_block = block
+                            add_block = copy.deepcopy(block)
                             add_block.append([col_no, row_no, new_y, new_x])
+                            print("Up:", len(block))
                             self.queue.append([copied_board, add_block])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
                 if self.checker.is_valid_index(new_x, new_y + col_no):
-                     if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
+                     while self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
                         print("down")
                         # print(new_x, new_y, col_no)
                         new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
+                        if new_y == block_y:
+                            break
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
-                            add_block = block
+                            add_block = copy.deepcopy(block)
                             add_block.append([col_no, row_no, new_y, new_x])
+                            print("Down:", len(block))
                             self.queue.append([copied_board, add_block])
 
                 block.append([col_no, row_no, block_y, block_x])
+                if len(block) != 6:
+                    print(len(block))
+                    print("Not enough")
+                    return block
                 current_block = block.pop(0)
+                print("Queue:", self.queue)
                 if current_block == first_block:
                     count += 1
 
