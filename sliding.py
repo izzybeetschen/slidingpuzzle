@@ -386,10 +386,8 @@ class BFS:
                 col_no, row_no, block_y, block_x = current_block
                 # print(current_block)
                 # print("Columns:", col_no, "Rows:", row_no, "X:", block_x, "Y:", block_y)
-                print(block_x, block_y)
                 a = current_state[block_x][block_y]
                 # print("A:", a)
-
                 # print(1)
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
@@ -397,24 +395,6 @@ class BFS:
                     if self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
                         # print("right")
                         new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
-                        one = self.count_x_in_matrix(copied_board, 1)
-                        if one != 2:
-                            return "right"
-                        two = self.count_x_in_matrix(copied_board, 2)
-                        if two != 1:
-                            return "right two"
-                        three = self.count_x_in_matrix(copied_board, 3)
-                        if three != 1:
-                            return "right"
-                        four = self.count_x_in_matrix(copied_board, 4)
-                        if four != 2:
-                            return "right"
-                        five = self.count_x_in_matrix(copied_board, 5)
-                        if five != 2:
-                            return "right"
-                        six = self.count_x_in_matrix(copied_board, 6)
-                        if six != 2:
-                            return "right"
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
                             add_block = copy.deepcopy(block)
@@ -427,24 +407,6 @@ class BFS:
                     if copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
                         # print("left")
                         new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
-                        one = self.count_x_in_matrix(copied_board, 1)
-                        if one != 2:
-                            return "left"
-                        two = self.count_x_in_matrix(copied_board, 2)
-                        if two != 1:
-                            return "left"
-                        three = self.count_x_in_matrix(copied_board, 3)
-                        if three != 1:
-                            return "left"
-                        four = self.count_x_in_matrix(copied_board, 4)
-                        if four != 2:
-                            return "left"
-                        five = self.count_x_in_matrix(copied_board, 5)
-                        if five != 2:
-                            return "left"
-                        six = self.count_x_in_matrix(copied_board, 6)
-                        if six != 2:
-                            return "left"
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
                             add_block = copy.deepcopy(block)
@@ -456,25 +418,7 @@ class BFS:
                 if self.checker.is_valid_index(new_x, new_y - 1):
                     if self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
                         # print("up")
-                        new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, a, copied_board)
-                        one = self.count_x_in_matrix(copied_board, 1)
-                        if one != 2:
-                            return "up"
-                        two = self.count_x_in_matrix(copied_board, 2)
-                        if two != 1:
-                            return "up"
-                        three = self.count_x_in_matrix(copied_board, 3)
-                        if three != 1:
-                            return "up"
-                        four = self.count_x_in_matrix(copied_board, 4)
-                        if four != 2:
-                            return "up"
-                        five = self.count_x_in_matrix(copied_board, 5)
-                        if five != 2:
-                            return "up"
-                        six = self.count_x_in_matrix(copied_board, 6)
-                        if six != 2:
-                            return "up"
+                        new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, col_no, a, copied_board)
                         if new_y != block_y:
                             if copied_board not in self.visited:
                                 self.visited.append(copied_board)
@@ -487,24 +431,6 @@ class BFS:
                 if self.checker.is_valid_index(new_x, new_y + col_no):
                      if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
                         new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
-                        one = self.count_x_in_matrix(copied_board, 1)
-                        if one != 2:
-                            return "down"
-                        two = self.count_x_in_matrix(copied_board, 2)
-                        if two != 1:
-                            return "down two"
-                        three = self.count_x_in_matrix(copied_board, 3)
-                        if three != 1:
-                            return "down"
-                        four = self.count_x_in_matrix(copied_board, 4)
-                        if four != 2:
-                            return "down"
-                        five = self.count_x_in_matrix(copied_board, 5)
-                        if five != 2:
-                            return "down"
-                        six = self.count_x_in_matrix(copied_board, 6)
-                        if six != 2:
-                            return "down"
                         if new_y != block_y:
                             if copied_board not in self.visited:
                                 self.visited.append(copied_board)
@@ -537,20 +463,20 @@ class BFS:
 
     def move_left(self, x, y, row_no, col_no, a, copied_board):
         current_x = x
-        if self.checker.is_valid_index(current_x - 1, y):
+        if self.checker.is_valid_index(current_x - 1, y) and self.checker.is_valid_index(current_x - 1 + row_no, y):
             for i in range(col_no):
                 if copied_board[current_x - 1][y + i] != 0:
                     return current_x, y, copied_board
 
             if copied_board[current_x - 1][y] == 0:
                 for i in range(col_no):
-                    copied_board[current_x][y + i] = 0
+                    copied_board[current_x - 1+ row_no][y + i] = 0
                     copied_board[current_x - 1][y + i] = a
                 current_x -= 1  # Move to the next position
-            # Return the final position after all valid moves
+        # Return the final position after all valid moves
         return current_x, y, copied_board
 
-    def move_up(self, x, y, row_no, a, copied_board):
+    def move_up(self, x, y, row_no, col_no, a, copied_board):
         current_y = y
 
         for i in range(row_no):
@@ -559,9 +485,9 @@ class BFS:
 
         if copied_board[x][current_y - 1] == 0:
             for i in range(row_no):
-                copied_board[x + i][current_y] = 0
+                copied_board[x + i][current_y - 1 + col_no] = 0
                 copied_board[x + i][current_y - 1] = a
-            current_y += 1  # Move to the next position
+            current_y -= 1  # Move to the next position
 
         # Return the final position after all valid moves
         return x, current_y, copied_board
@@ -587,12 +513,6 @@ class BFS:
             if board == new:
                 return True
         return False
-
-    def count_x_in_matrix(self, matrix, target):
-        count = 0
-        for row in matrix:
-            count += row.count(target)
-        return count
 
 
 def main(question, goal):
