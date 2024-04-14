@@ -115,7 +115,7 @@ class Checker:
                 return False
 
             # Get the block value in the top-left corner of the goal area
-            expected_block_value = current_board[goal_pos_y][goal_pos_x]
+            expected_block_value = current_board[goal_pos_x][goal_pos_y]
 
             # Iterate over the cells within the goal area
             for i in range(goal_size_y):
@@ -366,98 +366,156 @@ class BFS:
             col_no, row_no, block_y, block_x = map(int, block_str.split())
             block_queue.append([col_no, row_no, block_y, block_x])
         inside_queue = [self.board.board, block_queue]
-        self.queue.append(inside_queue)
-        self.visited.append(self.board.board)
+        self.queue.append([[[1, 2, 5], [1, 0, 5], [4, 0, 6], [4, 3, 6]], [[1, 2, 0, 2], [1, 2, 2, 0], [1, 2, 2, 2], [1, 2, 0, 0], [1, 1, 1, 0], [1, 1, 1, 3]]])
+        self.visited.append([[1, 2, 5], [1, 0, 5], [4, 0, 6], [4, 3, 6]])
 
         while self.queue:
             current = self.queue.pop(0)
             current_state, block = current
-            print("New Board")
-            print(current_state)
-            print(len(block))
+            # print("New Board")
+            # print(current_state)
+            # print(len(block))
             first_block = block.pop(0)
             current_block = first_block
             count = 1
             while count <= 6:
-                print("New Block")
+                # print("New Block")
                 if self.checker.is_board_solved(current_state):
                     return current_state
 
                 col_no, row_no, block_y, block_x = current_block
-                print(current_block)
-                print("Columns:", col_no, "Rows:", row_no, "X:", block_x, "Y:", block_y)
+                # print(current_block)
+                # print("Columns:", col_no, "Rows:", row_no, "X:", block_x, "Y:", block_y)
+                print(block_x, block_y)
                 a = current_state[block_x][block_y]
-                print("A:", a)
+                # print("A:", a)
 
+                # print(1)
                 copied_board = copy.deepcopy(current_state)
-                new_x, new_y = block_x, block_x
-                print(self.checker.is_valid_index(new_x + row_no, new_y))
+                new_x, new_y = block_x, block_y
                 if self.checker.is_valid_index(new_x + row_no, new_y):
                     if self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
-                        print("right")
+                        # print("right")
                         new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
+                        one = self.count_x_in_matrix(copied_board, 1)
+                        if one != 2:
+                            return "right"
+                        two = self.count_x_in_matrix(copied_board, 2)
+                        if two != 1:
+                            return "right two"
+                        three = self.count_x_in_matrix(copied_board, 3)
+                        if three != 1:
+                            return "right"
+                        four = self.count_x_in_matrix(copied_board, 4)
+                        if four != 2:
+                            return "right"
+                        five = self.count_x_in_matrix(copied_board, 5)
+                        if five != 2:
+                            return "right"
+                        six = self.count_x_in_matrix(copied_board, 6)
+                        if six != 2:
+                            return "right"
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
                             add_block = copy.deepcopy(block)
                             add_block.append([col_no, row_no, new_y, new_x])
-                            print(add_block)
                             self.queue.append([copied_board, add_block])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                print(self.checker.is_valid_index(new_x - 1, new_y))
                 if self.checker.is_valid_index(new_x - 1, new_y):
                     if copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
-                        print("left")
-                        if new_x == block_x:
-                            break
+                        # print("left")
                         new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
+                        one = self.count_x_in_matrix(copied_board, 1)
+                        if one != 2:
+                            return "left"
+                        two = self.count_x_in_matrix(copied_board, 2)
+                        if two != 1:
+                            return "left"
+                        three = self.count_x_in_matrix(copied_board, 3)
+                        if three != 1:
+                            return "left"
+                        four = self.count_x_in_matrix(copied_board, 4)
+                        if four != 2:
+                            return "left"
+                        five = self.count_x_in_matrix(copied_board, 5)
+                        if five != 2:
+                            return "left"
+                        six = self.count_x_in_matrix(copied_board, 6)
+                        if six != 2:
+                            return "left"
                         if copied_board not in self.visited:
                             self.visited.append(copied_board)
                             add_block = copy.deepcopy(block)
                             add_block.append([col_no, row_no, new_y, new_x])
-                            print("Left:", len(block))
                             self.queue.append([copied_board, add_block])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
                 if self.checker.is_valid_index(new_x, new_y - 1):
                     if self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
-                        print("up")
+                        # print("up")
                         new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, a, copied_board)
-                        print("New board:", copied_board)
-                        if new_y == block_y:
-                            break
-                        if copied_board not in self.visited:
-                            self.visited.append(copied_board)
-                            add_block = copy.deepcopy(block)
-                            add_block.append([col_no, row_no, new_y, new_x])
-                            print("Up:", len(block))
-                            self.queue.append([copied_board, add_block])
+                        one = self.count_x_in_matrix(copied_board, 1)
+                        if one != 2:
+                            return "up"
+                        two = self.count_x_in_matrix(copied_board, 2)
+                        if two != 1:
+                            return "up"
+                        three = self.count_x_in_matrix(copied_board, 3)
+                        if three != 1:
+                            return "up"
+                        four = self.count_x_in_matrix(copied_board, 4)
+                        if four != 2:
+                            return "up"
+                        five = self.count_x_in_matrix(copied_board, 5)
+                        if five != 2:
+                            return "up"
+                        six = self.count_x_in_matrix(copied_board, 6)
+                        if six != 2:
+                            return "up"
+                        if new_y != block_y:
+                            if copied_board not in self.visited:
+                                self.visited.append(copied_board)
+                                add_block = copy.deepcopy(block)
+                                add_block.append([col_no, row_no, new_y, new_x])
+                                self.queue.append([copied_board, add_block])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
                 if self.checker.is_valid_index(new_x, new_y + col_no):
                      if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
-                        print("down")
                         new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
-                        print("New board:", copied_board)
-                        if new_y == block_y:
-                            break
-                        if copied_board not in self.visited:
-                            self.visited.append(copied_board)
-                            add_block = copy.deepcopy(block)
-                            add_block.append([col_no, row_no, new_y, new_x])
-                            print("Down:", len(block))
-                            self.queue.append([copied_board, add_block])
+                        one = self.count_x_in_matrix(copied_board, 1)
+                        if one != 2:
+                            return "down"
+                        two = self.count_x_in_matrix(copied_board, 2)
+                        if two != 1:
+                            return "down two"
+                        three = self.count_x_in_matrix(copied_board, 3)
+                        if three != 1:
+                            return "down"
+                        four = self.count_x_in_matrix(copied_board, 4)
+                        if four != 2:
+                            return "down"
+                        five = self.count_x_in_matrix(copied_board, 5)
+                        if five != 2:
+                            return "down"
+                        six = self.count_x_in_matrix(copied_board, 6)
+                        if six != 2:
+                            return "down"
+                        if new_y != block_y:
+                            if copied_board not in self.visited:
+                                self.visited.append(copied_board)
+                                add_block = copy.deepcopy(block)
+                                add_block.append([col_no, row_no, new_y, new_x])
+                                self.queue.append([copied_board, add_block])
 
                 block.append([col_no, row_no, block_y, block_x])
                 if len(block) != 6:
-                    print(len(block))
-                    print("Not enough")
                     return block
                 current_block = block.pop(0)
-                print("Queue:", self.queue)
                 count += 1
 
         return self.visited
@@ -484,7 +542,7 @@ class BFS:
                 if copied_board[current_x - 1][y + i] != 0:
                     return current_x, y, copied_board
 
-            if copied_board[current_x + row_no][y] == 0:
+            if copied_board[current_x - 1][y] == 0:
                 for i in range(col_no):
                     copied_board[current_x][y + i] = 0
                     copied_board[current_x - 1][y + i] = a
@@ -494,10 +552,17 @@ class BFS:
 
     def move_up(self, x, y, row_no, a, copied_board):
         current_y = y
+
         for i in range(row_no):
-            copied_board[x + i][current_y] = 0
-            copied_board[x + i][current_y - 1] = a
-        current_y -= 1  # Move to the next position
+            if copied_board[x + i][current_y - 1] != 0:
+                return x, current_y, copied_board
+
+        if copied_board[x][current_y - 1] == 0:
+            for i in range(row_no):
+                copied_board[x + i][current_y] = 0
+                copied_board[x + i][current_y - 1] = a
+            current_y += 1  # Move to the next position
+
         # Return the final position after all valid moves
         return x, current_y, copied_board
 
@@ -522,6 +587,12 @@ class BFS:
             if board == new:
                 return True
         return False
+
+    def count_x_in_matrix(self, matrix, target):
+        count = 0
+        for row in matrix:
+            count += row.count(target)
+        return count
 
 
 def main(question, goal):
