@@ -372,35 +372,42 @@ class BFS:
         while self.queue:
             current = self.queue.pop(0)
             current_state, block = current
+            print("New Board")
+            print(current_state)
             print(len(block))
             first_block = block.pop(0)
-            print("Start:", len(block))
             current_block = first_block
             count = 1
-            while count != 2:
+            while count <= 6:
+                print("New Block")
                 if self.checker.is_board_solved(current_state):
                     return current_state
 
                 col_no, row_no, block_y, block_x = current_block
+                print(current_block)
+                print("Columns:", col_no, "Rows:", row_no, "X:", block_x, "Y:", block_y)
                 a = current_state[block_x][block_y]
+                print("A:", a)
 
-                new_x, new_y = block_x, block_y
                 copied_board = copy.deepcopy(current_state)
+                new_x, new_y = block_x, block_x
+                print(self.checker.is_valid_index(new_x + row_no, new_y))
                 if self.checker.is_valid_index(new_x + row_no, new_y):
-                    while self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
+                    if self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
                         print("right")
                         new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
-                        if copied_board not in self.visited and new_x != block_x:
+                        if copied_board not in self.visited:
                             self.visited.append(copied_board)
                             add_block = copy.deepcopy(block)
                             add_block.append([col_no, row_no, new_y, new_x])
-                            print("Right:", len(block))
+                            print(add_block)
                             self.queue.append([copied_board, add_block])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
+                print(self.checker.is_valid_index(new_x - 1, new_y))
                 if self.checker.is_valid_index(new_x - 1, new_y):
-                    while copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
+                    if copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
                         print("left")
                         if new_x == block_x:
                             break
@@ -415,9 +422,10 @@ class BFS:
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
                 if self.checker.is_valid_index(new_x, new_y - 1):
-                    while self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
+                    if self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
                         print("up")
                         new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, a, copied_board)
+                        print("New board:", copied_board)
                         if new_y == block_y:
                             break
                         if copied_board not in self.visited:
@@ -430,10 +438,10 @@ class BFS:
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
                 if self.checker.is_valid_index(new_x, new_y + col_no):
-                     while self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
+                     if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
                         print("down")
-                        # print(new_x, new_y, col_no)
                         new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
+                        print("New board:", copied_board)
                         if new_y == block_y:
                             break
                         if copied_board not in self.visited:
@@ -450,8 +458,7 @@ class BFS:
                     return block
                 current_block = block.pop(0)
                 print("Queue:", self.queue)
-                if current_block == first_block:
-                    count += 1
+                count += 1
 
         return self.visited
 
@@ -509,6 +516,12 @@ class BFS:
 
         # Return the final position after all valid moves
         return x, current_y, copied_board
+
+    def is_board_in_visited(self, board):
+        for new in self.visited:
+            if board == new:
+                return True
+        return False
 
 
 def main(question, goal):
