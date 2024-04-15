@@ -117,7 +117,7 @@ class EasyTests(unittest.TestCase):
         output = subprocess.check_output(command, shell=True)
         output_str = output.decode("utf-8")
         output_str = output_str.strip()
-        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n2 3 2 3\n1 1 1 3\n1 0 1 2\n2 0 1 0\n2 2 2 0\n1 2 2 2\n2 2 2 3', output_str)
+        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n1 1 1 3\n1 0 1 2\n2 0 1 0\n2 2 2 0\n1 2 2 2\n2 2 2 3', output_str)
 
     def test_big_search_1(self):
         command = 'python3 sliding.py puzzles/easy/big.search.1 puzzles/easy/big.search.1.goal'
@@ -155,6 +155,19 @@ class EasyTests(unittest.TestCase):
         output_str = output_str.strip()
         self.assertEqual('0 1 1 1', output_str)
 
+    def test_one_move_1(self):
+        command = 'python3 sliding.py puzzles/easy/one.move.1 puzzles/easy/one.move.1.deadend.goal.6'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('-1', output_str)
+
+    def test_no_move_3(self):
+        command = 'python3 sliding.py puzzles/easy/no.move.3 puzzles/easy/no.move.3.deadend.goal.6'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('-1', output_str)
 
 if __name__ == '__main__':
     unittest.main()

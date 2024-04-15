@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe704408-a0cf-45da-b9b4-f81361db1403" name="Changes" comment="Fixed testing, fixed moving multiple spaces">
+    <list default="true" id="fe704408-a0cf-45da-b9b4-f81361db1403" name="Changes" comment="Lots o progress">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sliding.py" beforeDir="false" afterPath="$PROJECT_DIR$/sliding.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_puzzles.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_puzzles.py" afterDir="false" />
@@ -188,7 +188,7 @@
       <option name="presentableId" value="Default" />
       <updated>1710521662686</updated>
       <workItem from="1710521666304" duration="121131000" />
-      <workItem from="1712939192551" duration="31756000" />
+      <workItem from="1712939192551" duration="33047000" />
     </task>
     <task id="LOCAL-00001" summary="Work so far on algorithm to solve any block puzzle">
       <option name="closed" value="true" />
@@ -438,7 +438,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713202241178</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Lots o progress">
+      <option name="closed" value="true" />
+      <created>1713209023381</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1713209023381</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -456,7 +464,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed check_solve method for 140x140" />
     <MESSAGE value="Added methods to find blocks to move and to find blocks that are goals" />
     <MESSAGE value="Added a broken move block method" />
     <MESSAGE value="Works for 140x140.goal" />
@@ -481,10 +488,11 @@
     <MESSAGE value="Working on fixing 140x140 on the new method" />
     <MESSAGE value="now moves one block, check_board_against_goals doesn't work" />
     <MESSAGE value="Fixed testing, fixed moving multiple spaces" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed testing, fixed moving multiple spaces" />
+    <MESSAGE value="Lots o progress" />
+    <option name="LAST_COMMIT_MESSAGE" value="Lots o progress" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Puzzles$.coverage" NAME=" Coverage Results" MODIFIED="1713206077593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Puzzles$.coverage" NAME=" Coverage Results" MODIFIED="1713210187408" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Puzzles$sliding.coverage" NAME="sliding Coverage Results" MODIFIED="1712939255390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Puzzles$Puzzles.coverage" NAME="Puzzles Coverage Results" MODIFIED="1711382620261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>

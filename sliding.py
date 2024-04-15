@@ -52,22 +52,29 @@ class Checker:
             if a == 0:
                 goal_met = False
 
-            # Check each cell within the goal area
+                # Check each cell within the goal area
             for i in range(goal_size_x):
-                for j in range(goal_size_y):
+                 for j in range(goal_size_y):
                     if not self.is_valid_index(goal_pos_x + i, goal_pos_y + j):
-                        goal_met = False
-                        break
+                        goal_met = False  # Goal area out of board bounds
                     if self.board.board[goal_pos_x + i][goal_pos_y + j] != a:
-                        goal_met = False
-                        break
+                        goal_met = False  # Goal area contains different block value
 
-            # Check if there are any extra blocks beyond the specified goal area
-            if (self.is_valid_index(goal_pos_x + goal_size_x, goal_pos_y) and self.board.board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
-                goal_met = False
+                # Check if there are any extra blocks beyond the specified goal area
 
-            if (self.is_valid_index(goal_pos_x, goal_pos_y + goal_size_y) and self.board.board[goal_pos_x][goal_pos_y + goal_size_y] == a):
-                goal_met = False
+            if (self.is_valid_index(goal_pos_x + goal_size_x, goal_pos_y) and
+                self.board.board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
+                goal_met = False  # Extra block to the right of the goal area
+
+            if (self.is_valid_index(goal_pos_x - 1, goal_pos_y)) and self.board.board[goal_pos_x - 1][goal_pos_y] == a:
+                goal_met = False  # Extra block to the left of the goal area
+
+            if (self.is_valid_index(goal_pos_x, goal_pos_y + goal_size_y) and
+                    self.board.board[goal_pos_x][goal_pos_y + goal_size_y] == a):
+                goal_met = False  # Extra block below the goal area
+
+            if (self.is_valid_index(goal_pos_x, goal_pos_y - 1)) and self.board.board[goal_pos_x][goal_pos_y - 1] == a:
+                goal_met = False  # Extra block below the goal area
 
             results.append({
                 'goal_index': goal_index,
@@ -366,17 +373,11 @@ def main(question, goal):
         else:
             algo.solution = algo.solution + str(already_solved_output)
 
-    for goal in goal_results:
-        if not goal['goal_met']:
-            if checker.check_impossible():
-                return '-1'
-
     # Process unsolved goals
     if unsolved_goals:
         result = bfs.BFS()
         if result == -1:
             return -1
-
     return algo.solution
 
 
