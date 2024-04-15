@@ -112,6 +112,49 @@ class EasyTests(unittest.TestCase):
         output_str = output_str.strip()
         self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n0 2 2 2\n0 1 0 2', output_str)
 
+    def test_big_block_4(self):
+        command = 'python3 sliding.py puzzles/easy/big.block.4 puzzles/easy/big.block.4.goal'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n2 3 2 3\n1 1 1 3\n1 0 1 2\n2 0 1 0\n2 2 2 0\n1 2 2 2\n2 2 2 3', output_str)
+
+    def test_big_search_1(self):
+        command = 'python3 sliding.py puzzles/easy/big.search.1 puzzles/easy/big.search.1.goal'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('0 1 0 1\n0 2 0 2\n1 0 1 0\n1 1 1 1\n1 2 1 2\n2 0 2 0\n2 1 2 1\n0 1 0 0\n0 2 0 1\n1 2 0 2\n2 2 1 2',
+                         output_str)
+
+    def test_big_search_2(self):
+        command = 'python3 sliding.py puzzles/easy/big.search.2 puzzles/easy/big.search.2.goal'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('0 1 0 1\n0 2 0 2\n1 0 1 0\n1 1 1 1\n1 2 1 2\n2 0 2 0\n2 1 2 1\n1 2 2 2\n0 2 1 2\n0 1 0 2\n0 0 0 1', output_str)
+
+    def test_big_tray_2(self):
+        command = 'python3 sliding.py puzzles/easy/big.tray.2 puzzles/easy/big.tray.2.goal'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('0 0 99 0', output_str)
+
+    def test_check_diff_blocks(self):
+        command = 'python3 sliding.py puzzles/easy/check.diff.blocks puzzles/easy/check.diff.blocks.goal'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('0 0 1 0\n0 2 0 0\n1 0 1 1\n1 1 0 1', output_str)
+
+    def test_easy(self):
+        command = 'python3 sliding.py puzzles/easy/easy puzzles/easy/easy.goal'
+        output = subprocess.check_output(command, shell=True)
+        output_str = output.decode("utf-8")
+        output_str = output_str.strip()
+        self.assertEqual('0 1 1 1', output_str)
+
 
 if __name__ == '__main__':
     unittest.main()
