@@ -96,21 +96,21 @@ class EasyTests(unittest.TestCase):
         output = subprocess.check_output(command, shell=True)
         output_str = output.decode("utf-8")
         output_str = output_str.strip()
-        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n2 2 1 2\n1 2 1 0', output_str)
+        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n2 0 1 0\n2 2 2 0', output_str)
 
     def test_big_block_2(self):
         command = 'python3 sliding.py puzzles/easy/big.block.2 puzzles/easy/big.block.2.goal'
         output = subprocess.check_output(command, shell=True)
         output_str = output.decode("utf-8")
         output_str = output_str.strip()
-        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n1 0 1 2\n1 2 2 2', output_str)
+        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n2 0 2 2\n1 0 2 0', output_str)
 
     def test_big_block_3(self):
         command = 'python3 sliding.py puzzles/easy/big.block.3 puzzles/easy/big.block.3.goal'
         output = subprocess.check_output(command, shell=True)
         output_str = output.decode("utf-8")
         output_str = output_str.strip()
-        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n0 1 2 1\n2 1 2 2', output_str)
+        self.assertEqual('0 0 0 0\n0 2 0 2\n2 0 2 0\n0 2 2 2\n0 1 0 2', output_str)
 
 
 if __name__ == '__main__':

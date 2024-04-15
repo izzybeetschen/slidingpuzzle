@@ -107,7 +107,6 @@ class Checker:
 
     def check_board_against_goals(self, copied_board):
         for goal_pos in self.goal_positions:
-            print(goal_pos)
             goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos
             a = copied_board[goal_pos_x][goal_pos_y]
 
@@ -123,6 +122,7 @@ class Checker:
                         return False  # Goal area contains different block value
 
             # Check if there are any extra blocks beyond the specified goal area
+
             if (self.is_valid_index(goal_pos_x + goal_size_x, goal_pos_y) and
                     copied_board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
                 return False  # Extra block to the right of the goal area
@@ -383,11 +383,8 @@ class BFS:
             first_block = block.pop(0)
             current_block = first_block
             count = 1
-            print(block)
             while count <= len(block) + 1:
-                print("New Block")
                 if self.checker.check_board_against_goals(current_state):
-                    print("Yas")
                     for vals in path:
                         x, y, new_x, new_y = vals
                         self.algo.append_answer(x, y, new_x, new_y)
@@ -398,90 +395,70 @@ class BFS:
                 # print("Columns:", col_no, "Rows:", row_no, "X:", block_x, "Y:", block_y)
                 a = current_state[block_x][block_y]
                 # print("A:", a)
-                print(1)
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                print(row_no, col_no)
-                print(new_y)
-                print(self.checker.is_valid_index(new_x + row_no, new_y))
-                if self.checker.is_valid_index(new_x + row_no, new_y):
-                    while self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
-                        print(2)
-                        new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
-                        if copied_board not in self.visited:
-                            if self.checker.check_board_against_goals(current_state):
-                                print("Yas")
-                                for vals in path:
-                                    x, y, new_x, new_y = vals
-                                    self.algo.append_answer(x, y, new_x, new_y)
-                                return
-                            self.visited.append(copied_board)
-                            add_block = copy.deepcopy(block)
-                            add_path = copy.deepcopy(path)
-                            add_block.append([col_no, row_no, new_y, new_x])
-                            add_path.append([block_x, block_y, new_x, new_y])
-                            self.queue.append([copied_board, add_block, add_path])
+                for z in range(len(copied_board) + 1):
+                    if self.checker.is_valid_index(new_x + row_no, new_y):
+                        if self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
+                            new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
+                    else:
+                        break
+                if copied_board not in self.visited:
+                    self.visited.append(copied_board)
+                    add_block = copy.deepcopy(block)
+                    add_path = copy.deepcopy(path)
+                    add_block.append([col_no, row_no, new_y, new_x])
+                    add_path.append([block_x, block_y, new_x, new_y])
+                    self.queue.append([copied_board, add_block, add_path])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                if self.checker.is_valid_index(new_x - 1, new_y):
-                    if copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
-                        # print("left")
-                        new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
-                        if copied_board not in self.visited:
-                            if self.checker.check_board_against_goals(current_state):
-                                print("Yas")
-                                for vals in path:
-                                    x, y, new_x, new_y = vals
-                                    self.algo.append_answer(x, y, new_x, new_y)
-                                return
-                            self.visited.append(copied_board)
-                            add_block = copy.deepcopy(block)
-                            add_path = copy.deepcopy(path)
-                            add_block.append([col_no, row_no, new_y, new_x])
-                            add_path.append([block_x, block_y, new_x, new_y])
-                            self.queue.append([copied_board, add_block, add_path])
+                for z in range(len(copied_board) + 1):
+                    if self.checker.is_valid_index(new_x - 1, new_y):
+                        if copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
+                            # print("left")
+                            new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
+                    else:
+                        break
+                if copied_board not in self.visited:
+                    self.visited.append(copied_board)
+                    add_block = copy.deepcopy(block)
+                    add_path = copy.deepcopy(path)
+                    add_block.append([col_no, row_no, new_y, new_x])
+                    add_path.append([block_x, block_y, new_x, new_y])
+                    self.queue.append([copied_board, add_block, add_path])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                if self.checker.is_valid_index(new_x, new_y - 1):
-                    if self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
-                        # print("up")
-                        new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, col_no, a, copied_board)
-                        if new_y != block_y:
-                            if copied_board not in self.visited:
-                                if self.checker.check_board_against_goals(current_state):
-                                    print("Yas")
-                                    for vals in path:
-                                        x, y, new_x, new_y = vals
-                                        self.algo.append_answer(x, y, new_x, new_y)
-                                    return
-                                self.visited.append(copied_board)
-                                add_block = copy.deepcopy(block)
-                                add_path = copy.deepcopy(path)
-                                add_block.append([col_no, row_no, new_y, new_x])
-                                add_path.append([block_x, block_y, new_x, new_y])
-                                self.queue.append([copied_board, add_block, add_path])
+                for z in range(len(copied_board) + 1):
+                    if self.checker.is_valid_index(new_x, new_y - 1):
+                        if self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
+                            new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, col_no, a, copied_board)
+                    else:
+                        break
+                if copied_board not in self.visited:
+                    self.visited.append(copied_board)
+                    add_block = copy.deepcopy(block)
+                    add_path = copy.deepcopy(path)
+                    add_block.append([col_no, row_no, new_y, new_x])
+                    add_path.append([block_x, block_y, new_x, new_y])
+                    self.queue.append([copied_board, add_block, add_path])
 
                 copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                if self.checker.is_valid_index(new_x, new_y + col_no):
-                     if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
-                        new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
-                        if new_y != block_y:
-                            if copied_board not in self.visited:
-                                if self.checker.check_board_against_goals(current_state):
-                                    print("Yas")
-                                    for vals in path:
-                                        x, y, new_x, new_y = vals
-                                        self.algo.append_answer(x, y, new_x, new_y)
-                                    return
-                                self.visited.append(copied_board)
-                                add_block = copy.deepcopy(block)
-                                add_path = copy.deepcopy(path)
-                                add_block.append([col_no, row_no, new_y, new_x])
-                                add_path.append([block_x, block_y, new_x, new_y])
-                                self.queue.append([copied_board, add_block, add_path])
+                for z in range(len(copied_board) + 1):
+                    if self.checker.is_valid_index(new_x, new_y + col_no):
+                         if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
+                            new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
+                    else:
+                        break
+                if copied_board not in self.visited:
+                    self.visited.append(copied_board)
+                    add_block = copy.deepcopy(block)
+                    add_path = copy.deepcopy(path)
+                    add_block.append([col_no, row_no, new_y, new_x])
+                    add_path.append([block_x, block_y, new_x, new_y])
+                    self.queue.append([copied_board, add_block, add_path])
 
                 block.append([col_no, row_no, block_y, block_x])
                 current_block = block.pop(0)
@@ -581,7 +558,6 @@ def main(question, goal):
     # Separate goals into solved and unsolved categories
     solved_goals = [goal for goal in goal_results if goal['goal_met']]
     unsolved_goals = [goal for goal in goal_results if not goal['goal_met']]
-    print(unsolved_goals)
 
     # Process already solved goals
     if solved_goals:
