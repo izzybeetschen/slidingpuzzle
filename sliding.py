@@ -63,12 +63,10 @@ class Checker:
                         break
 
             # Check if there are any extra blocks beyond the specified goal area
-            if (self.is_valid_index(goal_pos_x + goal_size_x, goal_pos_y) and
-                self.board.board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
+            if (self.is_valid_index(goal_pos_x + goal_size_x, goal_pos_y) and self.board.board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
                 goal_met = False
 
-            if (self.is_valid_index(goal_pos_x, goal_pos_y + goal_size_y) and
-                    self.board.board[goal_pos_x][goal_pos_y + goal_size_y] == a):
+            if (self.is_valid_index(goal_pos_x, goal_pos_y + goal_size_y) and self.board.board[goal_pos_x][goal_pos_y + goal_size_y] == a):
                 goal_met = False
 
             results.append({
@@ -109,8 +107,8 @@ class Checker:
 
     def check_board_against_goals(self, copied_board):
         for goal_pos in self.goal_positions:
+            print(goal_pos)
             goal_size_x, goal_size_y, goal_pos_x, goal_pos_y = goal_pos
-            goal_met = True
             a = copied_board[goal_pos_x][goal_pos_y]
 
             if a == 0:
@@ -129,9 +127,15 @@ class Checker:
                     copied_board[goal_pos_x + goal_size_x][goal_pos_y]) == a:
                 return False  # Extra block to the right of the goal area
 
+            if (self.is_valid_index(goal_pos_x - 1, goal_pos_y)) and copied_board[goal_pos_x - 1][goal_pos_y] == a:
+                return False # Extra block to the left of the goal area
+
             if (self.is_valid_index(goal_pos_x, goal_pos_y + goal_size_y) and
                     copied_board[goal_pos_x][goal_pos_y + goal_size_y] == a):
                 return False  # Extra block below the goal area
+
+            if (self.is_valid_index(goal_pos_x, goal_pos_y - 1)) and copied_board[goal_pos_x][goal_pos_y - 1] == a:
+                return False # Extra block below the goal area
 
         return True  # All goals are met
 
@@ -405,6 +409,12 @@ class BFS:
                         print(2)
                         new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
                         if copied_board not in self.visited:
+                            if self.checker.check_board_against_goals(current_state):
+                                print("Yas")
+                                for vals in path:
+                                    x, y, new_x, new_y = vals
+                                    self.algo.append_answer(x, y, new_x, new_y)
+                                return
                             self.visited.append(copied_board)
                             add_block = copy.deepcopy(block)
                             add_path = copy.deepcopy(path)
@@ -419,6 +429,12 @@ class BFS:
                         # print("left")
                         new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
                         if copied_board not in self.visited:
+                            if self.checker.check_board_against_goals(current_state):
+                                print("Yas")
+                                for vals in path:
+                                    x, y, new_x, new_y = vals
+                                    self.algo.append_answer(x, y, new_x, new_y)
+                                return
                             self.visited.append(copied_board)
                             add_block = copy.deepcopy(block)
                             add_path = copy.deepcopy(path)
@@ -434,6 +450,12 @@ class BFS:
                         new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, col_no, a, copied_board)
                         if new_y != block_y:
                             if copied_board not in self.visited:
+                                if self.checker.check_board_against_goals(current_state):
+                                    print("Yas")
+                                    for vals in path:
+                                        x, y, new_x, new_y = vals
+                                        self.algo.append_answer(x, y, new_x, new_y)
+                                    return
                                 self.visited.append(copied_board)
                                 add_block = copy.deepcopy(block)
                                 add_path = copy.deepcopy(path)
@@ -448,6 +470,12 @@ class BFS:
                         new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
                         if new_y != block_y:
                             if copied_board not in self.visited:
+                                if self.checker.check_board_against_goals(current_state):
+                                    print("Yas")
+                                    for vals in path:
+                                        x, y, new_x, new_y = vals
+                                        self.algo.append_answer(x, y, new_x, new_y)
+                                    return
                                 self.visited.append(copied_board)
                                 add_block = copy.deepcopy(block)
                                 add_path = copy.deepcopy(path)
