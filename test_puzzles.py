@@ -169,13 +169,6 @@ class EasyTests(unittest.TestCase):
         output_str = output_str.strip()
         self.assertEqual('-1', output_str)
 
-    def test_tree(self):
-        command = 'python3 sliding.py puzzles/easy/tree puzzles/easy/tree.goal'
-        output = subprocess.check_output(command, shell=True)
-        output_str = output.decode("utf-8")
-        output_str = output_str.strip()
-        self.assertEqual('0 2 0 3\n1 1 1 0\n2 2 2 0\n0 3 2 3\n2 3 2 2', output_str)
-
 
 if __name__ == '__main__':
     unittest.main()

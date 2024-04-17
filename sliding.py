@@ -1,5 +1,6 @@
 import sys
 import copy
+import cProfile
 
 
 class Board:
@@ -201,15 +202,19 @@ class BFS:
                 # print("Columns:", col_no, "Rows:", row_no, "X:", block_x, "Y:", block_y)
                 a = current_state[block_x][block_y]
                 # print("A:", a)
-                copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                for z in range(len(copied_board) + 1):
+                copy_no = 0
+                copied_board = 0
+                for z in range(len(current_state) + 1):
                     if self.checker.is_valid_index(new_x + row_no, new_y):
-                        if self.checker.is_valid_index(new_x + row_no, new_y) and copied_board[new_x + row_no][new_y] == 0:
+                        if copy_no == 0:
+                            copied_board = self.copy_board(current_state)
+                            copy_no += 1
+                        if copied_board[new_x + row_no][new_y] == 0:
                             new_x, new_y, copied_board = self.move_right(new_x, new_y, row_no, col_no, a, copied_board)
                     else:
                         break
-                if copied_board not in self.visited:
+                if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
                     add_block = copy.deepcopy(block)
                     add_path = copy.deepcopy(path)
@@ -217,16 +222,20 @@ class BFS:
                     add_path.append([block_x, block_y, new_x, new_y])
                     self.queue.append([copied_board, add_block, add_path])
 
-                copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                for z in range(len(copied_board) + 1):
+                copy_no = 0
+                copied_board = 0
+                for z in range(len(current_state) + 1):
                     if self.checker.is_valid_index(new_x - 1, new_y):
+                        if copy_no == 0:
+                            copied_board = self.copy_board(current_state)
+                            copy_no += 1
                         if copied_board[new_x - 1][new_y] == 0 and self.checker.is_valid_index(new_x - 1, new_y):
                             # print("left")
                             new_x, new_y, copied_board = self.move_left(new_x, new_y, row_no, col_no, a, copied_board)
                     else:
                         break
-                if copied_board not in self.visited:
+                if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
                     add_block = copy.deepcopy(block)
                     add_path = copy.deepcopy(path)
@@ -234,15 +243,19 @@ class BFS:
                     add_path.append([block_x, block_y, new_x, new_y])
                     self.queue.append([copied_board, add_block, add_path])
 
-                copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                for z in range(len(copied_board) + 1):
+                copy_no = 0
+                copied_board = 0
+                for z in range(len(current_state) + 1):
                     if self.checker.is_valid_index(new_x, new_y - 1):
+                        if copy_no == 0:
+                            copied_board = self.copy_board(current_state)
+                            copy_no += 1
                         if self.checker.is_valid_index(new_x, new_y - 1) and copied_board[new_x][new_y - 1] == 0:
                             new_x, new_y, copied_board = self.move_up(new_x, new_y, row_no, col_no, a, copied_board)
                     else:
                         break
-                if copied_board not in self.visited:
+                if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
                     add_block = copy.deepcopy(block)
                     add_path = copy.deepcopy(path)
@@ -250,15 +263,19 @@ class BFS:
                     add_path.append([block_x, block_y, new_x, new_y])
                     self.queue.append([copied_board, add_block, add_path])
 
-                copied_board = copy.deepcopy(current_state)
                 new_x, new_y = block_x, block_y
-                for z in range(len(copied_board) + 1):
+                copy_no = 0
+                copied_board = 0
+                for z in range(len(current_state) + 1):
                     if self.checker.is_valid_index(new_x, new_y + col_no):
-                         if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
+                        if copy_no == 0:
+                            copied_board = self.copy_board(current_state)
+                            copy_no += 1
+                        if self.checker.is_valid_index(new_x, new_y + col_no) and copied_board[new_x][new_y + col_no] == 0:
                             new_x, new_y, copied_board = self.move_down(new_x, new_y, row_no, col_no, a, copied_board)
                     else:
                         break
-                if copied_board not in self.visited:
+                if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
                     add_block = copy.deepcopy(block)
                     add_path = copy.deepcopy(path)
@@ -340,12 +357,14 @@ class BFS:
                 return True
         return False
 
+    def copy_board(self, current_board):
+        return copy.deepcopy(current_board)
+
 
 def main(question, goal):
     question_components = question.strip().split('\n')
     y, x = map(int, question_components[0].split())  # Extracting x and y coordinates
     board = Board(x, y)  # Creating the board object
-    goal_board = Board(x, y)
 
     block_value = 1
     for line in question_components[1:]:
@@ -388,4 +407,5 @@ if __name__ == '__main__':
     q = open(q)
     q = q.read()
     g = g.read()
-    print(main(q, g))
+    # print(main(q, g))
+    cProfile.run('main(q, g)')
