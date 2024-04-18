@@ -216,7 +216,7 @@ class BFS:
                         break
                 if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
-                    add_block = copy.deepcopy(block)
+                    add_block = [item for item in block]
                     add_path = copy.deepcopy(path)
                     add_block.append([col_no, row_no, new_y, new_x])
                     add_path.append([block_x, block_y, new_x, new_y])
@@ -237,8 +237,8 @@ class BFS:
                         break
                 if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
-                    add_block = copy.deepcopy(block)
-                    add_path = copy.deepcopy(path)
+                    add_block = [item for item in block]
+                    add_path = [item for item in path]
                     add_block.append([col_no, row_no, new_y, new_x])
                     add_path.append([block_x, block_y, new_x, new_y])
                     self.queue.append([copied_board, add_block, add_path])
@@ -257,8 +257,8 @@ class BFS:
                         break
                 if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
-                    add_block = copy.deepcopy(block)
-                    add_path = copy.deepcopy(path)
+                    add_block = [item for item in block]
+                    add_path = [item for item in path]
                     add_block.append([col_no, row_no, new_y, new_x])
                     add_path.append([block_x, block_y, new_x, new_y])
                     self.queue.append([copied_board, add_block, add_path])
@@ -277,8 +277,8 @@ class BFS:
                         break
                 if copied_board not in self.visited and copied_board != 0:
                     self.visited.append(copied_board)
-                    add_block = copy.deepcopy(block)
-                    add_path = copy.deepcopy(path)
+                    add_block = [item for item in block]
+                    add_path = [item for item in path]
                     add_block.append([col_no, row_no, new_y, new_x])
                     add_path.append([block_x, block_y, new_x, new_y])
                     self.queue.append([copied_board, add_block, add_path])
