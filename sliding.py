@@ -1,7 +1,7 @@
 import sys
 import copy
 import cProfile
-
+import os
 
 class Board:
     def __init__(self, x, y):
@@ -407,5 +407,4 @@ if __name__ == '__main__':
     q = open(q)
     q = q.read()
     g = g.read()
-    # print(main(q, g))
-    cProfile.run('main(q, g)')
+    print(main(q, g))

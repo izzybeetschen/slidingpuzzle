@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe704408-a0cf-45da-b9b4-f81361db1403" name="Changes" comment="Slightly improved speed">
+    <list default="true" id="fe704408-a0cf-45da-b9b4-f81361db1403" name="Changes" comment="Slightly more improved speed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/sliding.py" beforeDir="false" afterPath="$PROJECT_DIR$/sliding.py" afterDir="false" />
     </list>
@@ -188,7 +188,7 @@
       <option name="presentableId" value="Default" />
       <updated>1710521662686</updated>
       <workItem from="1710521666304" duration="121131000" />
-      <workItem from="1712939192551" duration="44771000" />
+      <workItem from="1712939192551" duration="47581000" />
     </task>
     <task id="LOCAL-00001" summary="Work so far on algorithm to solve any block puzzle">
       <option name="closed" value="true" />
@@ -470,7 +470,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713375991447</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="Slightly more improved speed">
+      <option name="closed" value="true" />
+      <created>1713455247194</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1713455247194</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -488,7 +496,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Bug fix - all tests run" />
     <MESSAGE value="Made move right + up" />
     <MESSAGE value="Up to big.block.3" />
     <MESSAGE value="Up to big.block.3 2" />
@@ -513,10 +520,11 @@
     <MESSAGE value="Fixing impossible result" />
     <MESSAGE value="Added more easy tests" />
     <MESSAGE value="Slightly improved speed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Slightly improved speed" />
+    <MESSAGE value="Slightly more improved speed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Slightly more improved speed" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Puzzles$.coverage" NAME=" Coverage Results" MODIFIED="1713453934720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Puzzles$.coverage" NAME=" Coverage Results" MODIFIED="1713480734234" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Puzzles$sliding.coverage" NAME="sliding Coverage Results" MODIFIED="1712939255390" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Puzzles$Puzzles.coverage" NAME="Puzzles Coverage Results" MODIFIED="1711382620261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
